@@ -10,6 +10,7 @@ use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PointController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SubMenuController;
+use App\Http\Controllers\ShortLinkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,11 @@ use App\Http\Controllers\SubMenuController;
 */
 
 
+
+
+Route::get('/short', [ShortLinkController::class, 'index'])->name('shorten.index');
+Route::post('/shorten', [ShortLinkController::class, 'store'])->name('shorten.store');
+Route::get('/{shortenedUrl}', [ShortLinkController::class, 'redirect'])->name('shorten.redirect');
 
 Route::get('/import-lines', function () {
     return view('import-lines');
