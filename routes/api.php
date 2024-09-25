@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
-
+use App\Http\Controllers\NetwatchController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,8 +15,12 @@ use App\Http\Controllers\OrderController;
 |
 */
 
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+
+Route::post('/mikrotik/netwatch-log', [NetwatchController::class, 'store']);
 Route::post('/owner/callback', [OrderController::class, 'callback'])->name('callback');

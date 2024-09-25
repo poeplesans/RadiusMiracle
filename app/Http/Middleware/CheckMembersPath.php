@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\MenuHelper;
 use Closure;
+use App\Models\Office;
+use App\Helpers\MenuHelper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CheckMembersPath
 {
@@ -17,6 +19,12 @@ class CheckMembersPath
      */
     public function handle(Request $request, Closure $next)
     {
+        $cek = Office::find(Auth::user()->office_id);
+        if ($cek->status != "active") {
+            return redirect('/owner/setting');
+        }
+
+        
         $arraymenus = MenuHelper::getDynamicMenu();
         $accesslist = $arraymenus['accesslist'];
         $currentPath = '/' . $request->path(); // Contoh: '/members', '/profile', dll.

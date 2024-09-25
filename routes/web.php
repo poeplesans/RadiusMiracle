@@ -11,6 +11,7 @@ use App\Http\Controllers\PointController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\SubMenuController;
 use App\Http\Controllers\ShortLinkController;
+use App\Http\Controllers\QRCodeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,10 +26,15 @@ use App\Http\Controllers\ShortLinkController;
 
 
 
+Route::get('/qr-scanner', [QRCodeController::class, 'index']);
+Route::get('/generate-qr', [QRCodeController::class, 'generate']);
 
+Route::get('/scan', function () {
+    return view('content.qrcode.scan');
+});
 Route::get('/short', [ShortLinkController::class, 'index'])->name('shorten.index');
 Route::post('/shorten', [ShortLinkController::class, 'store'])->name('shorten.store');
-Route::get('/{shortenedUrl}', [ShortLinkController::class, 'redirect'])->name('shorten.redirect');
+Route::get('/p/{shortenedUrl}', [ShortLinkController::class, 'redirect'])->name('shorten.redirect');
 
 Route::get('/import-lines', function () {
     return view('import-lines');
@@ -69,6 +75,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/notauth', [AuthController::class, 'notauth']);
     
 
+    // Route Midtrans
+    Route::get('/owner/setting', [OwnerController::class, 'index']);
     Route::post('/owner/pay', [OrderController::class, 'pay'])->name('pay');
     
     Route::middleware(['check.members'])->group(function () {
@@ -116,7 +124,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/backbone', [MapController::class, 'index']);
         Route::post('/backbone/group/add', [MapController::class, 'backboneGroupAdd']);
 
-        // Route Midtrans
-        Route::get('/owner/setting', [OwnerController::class, 'index']);
+        
     });
 });

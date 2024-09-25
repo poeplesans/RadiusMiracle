@@ -36,7 +36,8 @@ class ShortLinkController extends Controller
         $qrCodePath = public_path('QRcode/' . $qrCodeFileName);
 
         // Buat QR Code dari shortened URL
-        QrCode::format('svg')->size(200)->generate(route('shorten.redirect', $shortenedUrl), $qrCodePath);
+        $fullUrl = env('APP_URL_PUBLIC') . '/p/' . $shortenedUrl;
+        QrCode::format('svg')->size(200)->generate($fullUrl, $qrCodePath);
 
 
         // Simpan nama file QR Code di database
