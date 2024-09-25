@@ -6,3 +6,9 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
+
+
+<h3> Fitur Web Management's</h3>
+1. Web Role Multi Akses
+2. Menu Dinamis
+3. Payment Getway
