@@ -30,7 +30,7 @@ class MenuHelper
             ]);
         }
 
-        if (in_array($user->user_type, ['Owner', 'Creator'])) {
+        if (in_array($user->user_type, ['owner', 'creator'])) {
             $role = 1;
             $usercek = User::where('email', $user->email)->first();
             $usercek['role_id'] = [

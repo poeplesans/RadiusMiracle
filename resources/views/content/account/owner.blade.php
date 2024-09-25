@@ -376,13 +376,15 @@
                                 </div>
 
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label mb-0" for="ecommerce-settings-details-email">Secret KEY</label>
+                                    <label class="form-label mb-0" for="ecommerce-settings-details-email">Secret
+                                        KEY</label>
                                     <input type="email" class="form-control" id="ecommerce-settings-details-email"
                                         placeholder="xxxxxxxxxxxxxxxxx" name="email" aria-label="email" />
                                 </div>
 
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label mb-0" for="ecommerce-settings-sender-email">Callback Token</label>
+                                    <label class="form-label mb-0" for="ecommerce-settings-sender-email">Callback
+                                        Token</label>
                                     <input type="email" class="form-control" id="ecommerce-settings-sender-email"
                                         placeholder="xxxxxxxxxxxxxxxxx" name="sender_email" aria-label="sender email" />
                                 </div>
@@ -591,22 +593,29 @@
                                             <td class="small text-center">{{ $item->ppn }}</td>
                                             <td class="small text-center">{{ $item->discount }}</td>
                                             <td class="small text-center">{{ $item->total }}</td>
-                                            <td class="small text-center">
-                                                <div class="d-flex justify-content-sm-center align-items-sm-center">
-                                                    <button class="btn btn-sm btn-icon dropdown-toggle hide-arrow"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="bx bx-dots-vertical-rounded"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-end m-0">
-                                                        <a href="#" class="dropdown-item" data-bs-toggle="modal"
-                                                            data-bs-target="#paymentModal" data-id="{{ $item->invoice }}"
-                                                            data-item="{{ $item->item }}"
-                                                            data-price="{{ $item->total }}" onclick="fillModal(this)">
-                                                            <i class='bx bx-dollar-circle'></i> Paid
-                                                        </a>
+                                            @if ($item->status != 'settlement')
+                                                <td class="small text-center">
+                                                    <div class="d-flex justify-content-sm-center align-items-sm-center">
+                                                        <button class="btn btn-sm btn-icon dropdown-toggle hide-arrow"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu dropdown-menu-end m-0">
+                                                            <a href="#" class="dropdown-item"
+                                                                data-bs-toggle="modal" data-bs-target="#paymentModal"
+                                                                data-id="{{ $item->invoice }}"
+                                                                data-item="{{ $item->item }}"
+                                                                data-price="{{ $item->total }}"
+                                                                onclick="fillModal(this)">
+                                                                <i class='bx bx-dollar-circle'></i> Paid
+                                                            </a>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
+                                                </td>
+                                            @else
+                                                <td></td>
+                                            @endif
+
 
                                         </tr>
                                     @endforeach
@@ -663,8 +672,7 @@
     </div>
     {{-- <div id="snap-container"></div> --}}
 
-    <script type="text/javascript" src="{{ $url_endpoint }}"
-        data-client-key="{{ $client_key }}"></script>
+    <script type="text/javascript" src="{{ $url_endpoint }}" data-client-key="{{ $client_key }}"></script>
     {{-- <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
         data-client-key="{{ $client_key }}"></script> --}}
     <script>
@@ -723,7 +731,7 @@
                             onPending: function(result) {
                                 alert("waiting for your payment!");
                                 console.log(result);
-                                
+
                             },
                             onError: function(result) {
                                 alert("payment failed!");

@@ -26,6 +26,7 @@
                 <input type="hidden" name="email" value="{{ $email }}">
                 <div class="row justify-content-center">
                     <!-- /Left Text -->
+                    {{-- {{ dd($office) }} --}}
                     @foreach ($office as $item)
                         <div class="col-md-6 mb-md-0 mt-3">
                             <div class="form-check custom-option custom-option-icon">

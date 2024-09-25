@@ -243,16 +243,16 @@ class AuthController extends Controller
         if (!$user) {
             return response()->json(['error' => 'User Tidak ada di DB Master'], 401);
         }
-
-        if (in_array($user->user_type, ['Owner', 'Creator'])) {
+        
+        if (in_array($user->user_type, ['owner', 'creator'])) {
             if (!Hash::check($request->password, $user->password)) {
                 session()->flash('error', 'Failed Auth. Silakan coba lagi.');
                 return redirect()->back();
             }
-            if ($user->user_type == 'Owner') {
+            if ($user->user_type == 'owner') {
                 $office = UserOffice::with('office')->get();
             }
-            if ($user->user_type == 'Creator') {
+            if ($user->user_type == 'creator') {
                 $office = UserOffice::where('user_id', $user->id)->with('office')->get();
             }
             
@@ -262,7 +262,7 @@ class AuthController extends Controller
 
         // Cek database pengguna berdasarkan office_id
         $office = Office::find($user->office_id);
-
+        return $office;
         if (!$office) {
             return response()->json(['error' => 'Office not found'], 404);
         }
