@@ -21,11 +21,33 @@
     <link
         href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet" />
-
     <!-- Icons -->
     <link rel="stylesheet" href="../resource/assets/vendor/fonts/boxicons.css" />
     <link rel="stylesheet" href="../resource/assets/vendor/fonts/fontawesome.css" />
     <link rel="stylesheet" href="../resource/assets/vendor/fonts/flag-icons.css" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../resource/assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/css/rtl/theme-default.css"
+        class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="../resource/assets/css/demo.css" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="../resource/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/libs/typeahead-js/typeahead.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/libs/fullcalendar/fullcalendar.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/libs/flatpickr/flatpickr.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/libs/quill/editor.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/libs/@form-validation/umd/styles/index.min.css" />
+
+    <!-- Import From File -->
+    @yield('page-up')
+    {{-- @yield('page-style') --}}
+    {{-- <link rel="stylesheet" href="../resource/assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/fonts/flag-icons.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/libs/select2/select2.css" />
 
 
     <!-- Core CSS -->
@@ -40,13 +62,21 @@
     <link rel="stylesheet" href="../resource/assets/vendor/libs/tagify/tagify.css" />
     <link rel="stylesheet" href="../resource/assets/vendor/libs/dropzone/dropzone.css" />
 
+    
     <!-- Page CSS -->
     <link rel="stylesheet" href="../resource/assets/vendor/libs/sweetalert2/sweetalert2.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/css/pages/page-pricing.css" />
+    <link rel="stylesheet" href="../resource/assets/vendor/css/pages/app-calendar.css" /> --}}
+    {{-- <link rel="stylesheet" href="../resource/assets/vendor/libs/fullcalendar/fullcalendar.css" /> --}}
+    {{-- <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <link rel="stylesheet" href="../resource/assets/vendor/libs/flatpickr/flatpickr.css" /> --}}
+
     <!-- Page MAP -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    {{-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+
 
 
     <!-- Helpers -->
@@ -120,10 +150,10 @@
                 <div class="content-wrapper">
                     <!-- Content -->
 
-                    <div class="m-5 flex-grow-1 container-p-y">
+                    {{-- <div class="m-5 flex-grow-1 container-p-y"> --}}
                         @yield('container')
                         <!--/ Layout Demo -->
-                    </div>
+                    {{-- </div> --}}
                     <!-- / Content -->
 
                     <!-- Footer -->
@@ -162,12 +192,39 @@
     <!-- endbuild -->
 
     <!-- Vendors JS -->
-    <script src="../resource/assets/vendor/libs/apex-charts/apexcharts.js"></script>
-    <script src="../resource/assets/vendor/libs/dropzone/dropzone.js"></script>
-    <script src="../resource/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
-
+    <script src="../resource/assets/vendor/libs/fullcalendar/fullcalendar.js"></script>
+    <script src="../resource/assets/vendor/libs/@form-validation/umd/bundle/popular.min.js"></script>
+    <script src="../resource/assets/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js"></script>
+    <script src="../resource/assets/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js"></script>
+    <script src="../resource/assets/vendor/libs/select2/select2.js"></script>
+    <script src="../resource/assets/vendor/libs/flatpickr/flatpickr.js"></script>
+    <script src="../resource/assets/vendor/libs/moment/moment.js"></script>
 
     <!-- Main JS -->
+    <script src="../resource/assets/js/main.js"></script>
+    
+    <!--Import From File Down -->
+    @yield('page-down')
+    {{-- @yield('page-script') --}}
+    {{-- <script src="../resource/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../resource/assets/vendor/libs/popper/popper.js"></script>
+    <script src="../resource/assets/vendor/js/bootstrap.js"></script>
+    <script src="../resource/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="../resource/assets/vendor/libs/hammer/hammer.js"></script>
+    <script src="../resource/assets/vendor/libs/i18n/i18n.js"></script>
+    <script src="../resource/assets/vendor/libs/typeahead-js/typeahead.js"></script>
+    <script src="../resource/assets/vendor/js/menu.js"></script>
+
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    
+    <script src="../resource/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+    <script src="../resource/assets/vendor/libs/dropzone/dropzone.js"></script>
+    <script src="../resource/assets/vendor/libs/sweetalert2/sweetalert2.js"></script> --}}
+
+
+    {{-- <!-- Main JS -->
     <script src="../resource/assets/js/main.js"></script>
 
     <!-- Page JS -->
@@ -182,11 +239,12 @@
 
 
     <!-- Page JS -->
-    
+    <script src="../resource/assets/vendor/libs/select2/select2.js"></script>
     <script src="../resource/assets/js/forms-selects.js"></script>
     <script src="../resource/assets/js/forms-typeahead.js"></script>
-    <script src="../resource/assets/js/forms-file-upload.js"></script>
-    
+    <script src="../resource/assets/js/forms-file-upload.js"></script> --}}
+    {{-- <script src="../resource/assets/js/pages-pricing.js"></script> --}}
+
 
 </body>
 

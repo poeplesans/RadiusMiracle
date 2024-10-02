@@ -842,7 +842,8 @@
                                                 <div class="row">
                                                     @foreach ($menus['menus'] as $menuName => $subMenus)
                                                         @if (isset($menus['menus']) && is_array($menus['menus']))
-                                                            @if (isset($subMenus) && is_array($subMenus) && count($subMenus) >= 8)
+                                                            @if (isset($subMenus) && is_array($subMenus) && $subMenus[0]['name'] != null)
+                                                                {{-- {{ dd($subMenus[0]['name']) }} --}}
                                                                 <small class="text-light m-3">
                                                                     <i class="{{ $subMenus['icon'] }} me-2"></i>
                                                                     {{ $menuName }}

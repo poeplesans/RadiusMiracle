@@ -26,9 +26,8 @@
     </div>
     <div class="d-none d-lg-flex col-lg-7 col-xl-8 align-items-center">
         <div class="flex-row text-center mx-auto">
-            <img src="../resource/assets/img/pages/login-light.png" alt="Auth Cover Bg color" width="520"
-                class="img-fluid authentication-cover-img" data-app-light-img="pages/login-light.png"
-                data-app-dark-img="pages/login-dark.png" />
+            <img src="../warehouse/officeProfile/login-dark.png" alt="Auth Cover Bg color" width="520"
+                class="img-fluid authentication-cover-img"  />
             <div class="mx-auto">
                 <h3>Discover the powerful admin template 🥳</h3>
                 <p>
@@ -82,7 +81,7 @@
                             </g>
                         </svg>
                     </span>
-                    <span class="app-brand-text demo h3 mb-0 fw-bold">Frest</span>
+                    <span class="app-brand-text demo h3 mb-0 fw-bold">Miracle</span>
                 </a>
             </div>
             <!-- /Logo -->

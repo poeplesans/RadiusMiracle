@@ -46,4 +46,38 @@ class OwnerController extends Controller
             'url_endpoint' => $midtrans->url_endpoint
         ]);
     }
+    public function package()
+    {
+        
+        // return $midtrans;
+
+
+        $user = Auth::user();
+        if (!$user) {
+            return '';
+        }
+
+        $invoice = Invoice::where('office_id', $user->office_id)->get();
+        // return dd($invoice);
+        // Mengambil dynamic menu
+        $arraymenus = MenuHelper::getDynamicMenu();
+        $menus = $arraymenus['menus'];
+
+        // Set dynamic connection
+        $midtrans = Midtrans::where("name", "midtrans")->first();
+        DatabaseHelper::setDynamicConnection();
+        // Mengambil semua data user
+        $users = User::with('role_id')->get();
+        $usercek = User::where('email', $user->email)->with('role_id')->first();
+        $usercek->makeHidden(['password']);
+
+        return view('content.account.package', [
+            'menuArray' => $menus,
+            'users' => $users,
+            'usercek' => $usercek,
+            'invoice' => $invoice,
+            'client_key' => $midtrans->client_key,
+            'url_endpoint' => $midtrans->url_endpoint
+        ]);
+    }
 }

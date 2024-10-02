@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LineController;
@@ -9,9 +10,10 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PointController;
 use App\Http\Controllers\MemberController;
-use App\Http\Controllers\SubMenuController;
-use App\Http\Controllers\ShortLinkController;
 use App\Http\Controllers\QRCodeController;
+use App\Http\Controllers\SubMenuController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ShortLinkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +49,6 @@ Route::get('/select', function () {
 });
 
 
-
 Route::middleware('guest')->group(function () {
     Route::get('/register', function () {
         return view('layouts.auth.register');
@@ -61,7 +62,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/', function () {
         return view('layouts.auth.login');
     })->name('login');
-
+    
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/select-login', [AuthController::class, 'selectlogin']);
@@ -69,13 +70,15 @@ Route::middleware('guest')->group(function () {
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/absensi/get', [CalendarController::class, 'getevent'])->name('getevent');
     Route::get('/logout', [AuthController::class, 'logout']);
     Route::get('/', [MenuController::class, 'home'])->name('home');
     Route::get('/tes', [MenuController::class, 'show'])->name('tes');
     Route::get('/notauth', [AuthController::class, 'notauth']);
     
-
+    Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
     // Route Midtrans
+    Route::get('/owner/package', [OwnerController::class, 'package']);
     Route::get('/owner/setting', [OwnerController::class, 'index']);
     Route::post('/owner/pay', [OrderController::class, 'pay'])->name('pay');
     
@@ -97,6 +100,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/sub-menu/edit', [SubMenuController::class, 'submenuedit'])->name('sub-menu.edit');
         Route::delete('/sub-menu/delete/{id}', [SubMenuController::class, 'submenudelete'])->name('sub-menu.destroy');
 
+        Route::get('/absensi', [CalendarController::class, 'absensi'])->name('absensi');
+        Route::get('/absensi/abs', [CalendarController::class, 'abs'])->name('absensi');
+        
         // Route Members & Role
         Route::get('/members', [MemberController::class, 'index'])->name('members');
         Route::post('/members/users/add', [MemberController::class, 'store'])->name('members.users.add');

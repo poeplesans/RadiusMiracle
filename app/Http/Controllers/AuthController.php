@@ -47,7 +47,7 @@ class AuthController extends Controller
             'address' => $request->address,
             'status' => 'active'
         ]);
-        
+
 
         // Buat database baru jika belum ada
         DB::statement("CREATE DATABASE IF NOT EXISTS $dbName");
@@ -117,6 +117,15 @@ class AuthController extends Controller
             $table->timestamps();
         });
 
+        Schema::connection($dbName)->create('events', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->dateTime('start');
+            $table->dateTime('end')->nullable();
+            $table->boolean('all_day')->default(false);
+            $table->string('calendar')->nullable(); // Misalnya untuk kategori event seperti 'Business', 'Personal', dll.
+            $table->timestamps();
+        });
         Schema::connection($dbName)->create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
@@ -243,7 +252,7 @@ class AuthController extends Controller
         if (!$user) {
             return response()->json(['error' => 'User Tidak ada di DB Master'], 401);
         }
-        
+
         if (in_array($user->user_type, ['owner', 'creator'])) {
             if (!Hash::check($request->password, $user->password)) {
                 session()->flash('error', 'Failed Auth. Silakan coba lagi.');
@@ -255,7 +264,7 @@ class AuthController extends Controller
             if ($user->user_type == 'creator') {
                 $office = UserOffice::where('user_id', $user->id)->with('office')->get();
             }
-            
+
             // return dd($office);
             return view('layouts.auth.select', ['email' => $user->email, 'office' => $office]);
         }
