@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HrController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\AuthController;
@@ -9,11 +10,11 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\PointController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\SubMenuController;
 use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\HrController;
 use App\Http\Controllers\ShortLinkController;
 
 /*
@@ -28,10 +29,12 @@ use App\Http\Controllers\ShortLinkController;
 */
 
 
-
+Route::post('/import-data', [ExportController::class, 'import'])->name('import.data');
 Route::get('/qr-scanner', [QRCodeController::class, 'index']);
+Route::get('/pushmenu', [ExportController::class, 'pushmenu']);
+Route::get('/index', [ExportController::class, 'index']);
 Route::get('/generate-qr', [QRCodeController::class, 'generate']);
-
+Route::get('export/combined', [ExportController::class, 'exportCombined']);
 Route::get('/scan', function () {
     return view('content.qrcode.scan');
 });

@@ -64,13 +64,13 @@ class MenuHelper
                     'menus.id as menu_id',
                     'menus.name as menu_name',
                     'menus.icon as menu_icon',
-                    'menus.url as menu_url',
+                    // 'menus.url as menu_url',
                     'menus.created_at as menus_created_at',
                     'menus.updated_at as menus_updated_at',
                     'sub_menus.id as sub_menu_id',
                     'sub_menus.name as sub_menu_name',
                     'sub_menus.url as sub_menu_url',
-                    'sub_menus.icon as sub_menu_icon',
+                    // 'sub_menus.icon as sub_menu_icon',
                     'sub_menus.created_at as sub_menus_created_at', // Tambahkan ini
                     'sub_menus.updated_at as sub_menus_updated_at', // Tambahkan ini
                 )
@@ -94,13 +94,13 @@ class MenuHelper
                     'menus.id as menu_id',
                     'menus.name as menu_name',
                     'menus.icon as menu_icon', // Tambahkan ini untuk ikon di menu
-                    'menus.url as menu_url', // Tambahkan ini untuk URL di menu
+                    // 'menus.url as menu_url', // Tambahkan ini untuk URL di menu
                     'menus.created_at as menus_created_at', // Tambahkan ini
                     'menus.updated_at as menus_updated_at', // Tambahkan ini
                     'sub_menus.id as sub_menu_id',
                     'sub_menus.name as sub_menu_name',
                     'sub_menus.url as sub_menu_url',
-                    'sub_menus.icon as sub_menu_icon', // Tambahkan ini untuk ikon di sub menu
+                    // 'sub_menus.icon as sub_menu_icon', // Tambahkan ini untuk ikon di sub menu
                     'sub_menus.created_at as sub_menus_created_at', // Tambahkan ini
                     'sub_menus.updated_at as sub_menus_updated_at', // Tambahkan ini
                 )
@@ -124,7 +124,7 @@ class MenuHelper
                 // Tambahkan icon untuk menu di sini
                 $menuStructure[$menu->header_name]['menus'][$menu->menu_name] = [
                     'icon' => $menu->menu_icon, // Ikon untuk menu
-                    'url' => $menu->menu_url, // Ikon untuk menu
+                    // 'url' => $menu->menu_url, // Ikon untuk menu
                     'menu_id' => $menu->menu_id, // Ikon untuk menu
                     'created_at' => $menu->menus_created_at, // Tambahkan created_at
                     'updated_at' => $menu->menus_updated_at, // Tambahkan updated_at
@@ -150,7 +150,7 @@ class MenuHelper
                 'menu_name' => $menu->menu_name,
                 'header_id' => $menu->header_id,
                 'header_name' => $menu->header_name,
-                'sub_menu_icon' => $menu->sub_menu_icon,
+                // 'sub_menu_icon' => $menu->sub_menu_icon,
                 'sub_menu_url' => $menu->sub_menu_url,
                 'created_at' => $menu->sub_menus_created_at,
                 'updated_at' => $menu->sub_menus_updated_at,

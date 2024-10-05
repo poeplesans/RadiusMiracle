@@ -76,19 +76,9 @@ class AuthController extends Controller
             'office_id' => $office->id,
         ]);
 
-        // // Simpan user di database office yang baru dibuat
-        // DB::connection($dbName)->table('users')->insert([
-        //     'username' => $request->username,
-        //     'email' => $request->email,
-        //     'password' => Hash::make($request->password),
-        //     'status' => 'active',
-        //     'role' => 'SuperAdmin',
-        // ]);
-
-        // Set the value in the configuration
         Config::set('seeder.db_name', $dbName);
         Artisan::call('db:seed', [
-            '--class' => 'RoleMenuSeeder',
+            '--class' => 'ImportMenuSeeder',
         ]);
 
         return redirect('/login')->with('status', 'Registration successful! Please log in.');
