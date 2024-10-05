@@ -4,8 +4,12 @@
 
 'use strict';
 
+
 // Datatable (jquery)
 $(function () {
+  var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Ambil CSRF token dari meta tag
+  var apiUrl = '/members/api'; // URL API
+
   let borderColor, bodyBg, headingColor;
 
   if (isDarkStyle) {
@@ -21,12 +25,25 @@ $(function () {
   // Variable declaration for table
   var dt_user_table = $('.datatables-users'),
     select2 = $('.select2'),
-    userView = 'app-user-view-account.html',
+    userView = 'user/',
     statusObj = {
-      1: { title: 'Pending', class: 'bg-label-warning' },
-      2: { title: 'Active', class: 'bg-label-success' },
-      3: { title: 'Inactive', class: 'bg-label-secondary' }
+      1: { title: 'inactive', class: 'bg-label-warning' },
+      2: { title: 'active', class: 'bg-label-success' },
+      3: { title: 'waitting', class: 'bg-label-secondary' }
     };
+  function findKeyByTitle(title) {
+    var resultKeys = []; // To store keys that match the title
+
+    for (var key in statusObj) {
+      if (statusObj.hasOwnProperty(key)) {
+        if (statusObj[key].title === title) {
+          resultKeys.push(key); // Add the key to results if it matches
+        }
+      }
+    }
+
+    return resultKeys; // Return the array of matching keys
+  }
 
   if (select2.length) {
     var $this = select2;
@@ -35,19 +52,62 @@ $(function () {
       dropdownParent: $this.parent()
     });
   }
-
+  // Fungsi untuk mengambil data dari API
+  function fetchUserData(apiUrl, csrfToken) {
+    return fetch(apiUrl, {
+      method: 'GET',
+      // headers: {
+      //   'X-CSRF-TOKEN': csrfToken,
+      //   'Content-Type': 'application/json'
+      // }
+    })
+      .then(response => {
+        // console.log(response)
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'success') {
+          return data.data; // Mengambil data jika status success
+        } else {
+          throw new Error('Error fetching data');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        return [];
+      });
+  }
   // Users datatable
   if (dt_user_table.length) {
     var dt_user = dt_user_table.DataTable({
-      ajax: assetsPath + 'json/user-list.json', // JSON file to add data
+      // ajax: assetsPath + 'json/user-list.json', // JSON file to add data
+      ajax: function (data, callback, settings) {
+        // Panggil fungsi fetchUserData yang sudah dibuat
+        fetchUserData(apiUrl, csrfToken)
+          .then(responseData => {
+            callback({
+              data: responseData // Data yang diterima dari API
+            });
+          })
+          .catch(error => {
+            // console.error('Error in DataTable:', error);
+            callback({
+              data: [] // Kembalikan array kosong jika ada error
+            });
+          });
+      },
       columns: [
         // columns according to JSON
         { data: '' },
         { data: 'full_name' },
-        { data: 'role' },
-        { data: 'current_plan' },
-        { data: 'billing' },
+        { data: 'nip' },
+        { data: 'telegram_id' },
+        { data: 'access_bot' },
         { data: 'status' },
+        { data: 'role' },
         { data: 'action' }
       ],
       columnDefs: [
@@ -69,6 +129,7 @@ $(function () {
           render: function (data, type, full, meta) {
             var $name = full['full_name'],
               $email = full['email'],
+              $username = full['nip'],
               $image = full['avatar'];
             if ($image) {
               // For Avatar image
@@ -94,9 +155,9 @@ $(function () {
               '</div>' +
               '<div class="d-flex flex-column">' +
               '<a href="' +
-              userView +
+              userView + $username +
               '" class="text-body text-truncate"><span class="fw-medium">' +
-              $name +
+              $name + ' [' + $username + ']' +
               '</span></a>' +
               '<small class="text-muted">' +
               $email +
@@ -106,31 +167,49 @@ $(function () {
             return $row_output;
           }
         },
+        // {
+        //   // User nip
+        //   targets: 2,
+        //   render: function (data, type, full, meta) {
+        //     var $role = full['nip'];
+        //     var roleBadgeObj = {
+        //       Subscriber:
+        //         '<span class="badge badge-center rounded-pill bg-label-warning w-px-30 h-px-30 me-2"><i class="bx bx-user bx-xs"></i></span>',
+        //       Author:
+        //         '<span class="badge badge-center rounded-pill bg-label-success w-px-30 h-px-30 me-2"><i class="bx bx-cog bx-xs"></i></span>',
+        //       Maintainer:
+        //         '<span class="badge badge-center rounded-pill bg-label-primary w-px-30 h-px-30 me-2"><i class="bx bx-pie-chart-alt bx-xs"></i></span>',
+        //       Editor:
+        //         '<span class="badge badge-center rounded-pill bg-label-info w-px-30 h-px-30 me-2"><i class="bx bx-edit bx-xs"></i></span>',
+        //       Admin:
+        //         '<span class="badge badge-center rounded-pill bg-label-secondary w-px-30 h-px-30 me-2"><i class="bx bx-mobile-alt bx-xs"></i></span>'
+        //     };
+        //     return "<span class='text-truncate d-flex align-items-center'>" + roleBadgeObj[$role] + $role + '</span>';
+        //   }
+        // },
         {
-          // User Role
+          // Plans
           targets: 2,
           render: function (data, type, full, meta) {
-            var $role = full['role'];
-            var roleBadgeObj = {
-              Subscriber:
-                '<span class="badge badge-center rounded-pill bg-label-warning w-px-30 h-px-30 me-2"><i class="bx bx-user bx-xs"></i></span>',
-              Author:
-                '<span class="badge badge-center rounded-pill bg-label-success w-px-30 h-px-30 me-2"><i class="bx bx-cog bx-xs"></i></span>',
-              Maintainer:
-                '<span class="badge badge-center rounded-pill bg-label-primary w-px-30 h-px-30 me-2"><i class="bx bx-pie-chart-alt bx-xs"></i></span>',
-              Editor:
-                '<span class="badge badge-center rounded-pill bg-label-info w-px-30 h-px-30 me-2"><i class="bx bx-edit bx-xs"></i></span>',
-              Admin:
-                '<span class="badge badge-center rounded-pill bg-label-secondary w-px-30 h-px-30 me-2"><i class="bx bx-mobile-alt bx-xs"></i></span>'
-            };
-            return "<span class='text-truncate d-flex align-items-center'>" + roleBadgeObj[$role] + $role + '</span>';
+            var $plan = full['username'];
+
+            return '<span class="fw-medium">' + $plan + '</span>';
           }
         },
         {
           // Plans
           targets: 3,
           render: function (data, type, full, meta) {
-            var $plan = full['current_plan'];
+            var $plan = full['telegram_id'];
+
+            return '<span class="fw-medium">' + $plan + '</span>';
+          }
+        },
+        {
+          // Plans
+          targets: 4,
+          render: function (data, type, full, meta) {
+            var $plan = full['email'];
 
             return '<span class="fw-medium">' + $plan + '</span>';
           }
@@ -140,8 +219,14 @@ $(function () {
           targets: 5,
           render: function (data, type, full, meta) {
             var $status = full['status'];
-
-            return '<span class="badge ' + statusObj[$status].class + '">' + statusObj[$status].title + '</span>';
+            var activeKeys = findKeyByTitle($status);
+            var statusInfo = statusObj[activeKeys]; // Assume data is 1, 2, or 3
+            if (statusInfo) {
+              return '<span class="badge ' + statusInfo.class + '">' + statusInfo.title + '</span>';
+            } else {
+              return '<span class="badge bg-label-secondary">Unknown</span>'; // Fallback for unknown status
+            }
+            // return '<span class="badge bg-label-warning">' + $status + '</span>';
           }
         },
         {
@@ -151,17 +236,12 @@ $(function () {
           searchable: false,
           orderable: false,
           render: function (data, type, full, meta) {
+            // console.log(data)
+            var $username = full['username']
             return (
               '<div class="d-inline-block text-nowrap">' +
-              '<button class="btn btn-sm btn-icon"><i class="bx bx-edit"></i></button>' +
+              '<button class="btn btn-sm btn-icon edit-button" data-user=\'' + JSON.stringify(full).replace(/'/g, "&apos;") + '\'><i class="bx bx-edit"></i></button>' +
               '<button class="btn btn-sm btn-icon delete-record"><i class="bx bx-trash"></i></button>' +
-              '<button class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded me-2"></i></button>' +
-              '<div class="dropdown-menu dropdown-menu-end m-0">' +
-              '<a href="' +
-              userView +
-              '" class="dropdown-item">View</a>' +
-              '<a href="javascript:;" class="dropdown-item">Suspend</a>' +
-              '</div>' +
               '</div>'
             );
           }
@@ -347,18 +427,18 @@ $(function () {
             var data = $.map(columns, function (col, i) {
               return col.title !== '' // ? Do not show row in modal popup if title is blank (for check box)
                 ? '<tr data-dt-row="' +
-                    col.rowIndex +
-                    '" data-dt-column="' +
-                    col.columnIndex +
-                    '">' +
-                    '<td>' +
-                    col.title +
-                    ':' +
-                    '</td> ' +
-                    '<td>' +
-                    col.data +
-                    '</td>' +
-                    '</tr>'
+                col.rowIndex +
+                '" data-dt-column="' +
+                col.columnIndex +
+                '">' +
+                '<td>' +
+                col.title +
+                ':' +
+                '</td> ' +
+                '<td>' +
+                col.data +
+                '</td>' +
+                '</tr>'
                 : '';
             }).join('');
 
@@ -367,35 +447,12 @@ $(function () {
         }
       },
       initComplete: function () {
-        // Adding role filter once table initialized
         this.api()
-          .columns(2)
+          .columns(6)
           .every(function () {
             var column = this;
             var select = $(
-              '<select id="UserRole" class="form-select text-capitalize"><option value=""> Select Role </option></select>'
-            )
-              .appendTo('.user_role')
-              .on('change', function () {
-                var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                column.search(val ? '^' + val + '$' : '', true, false).draw();
-              });
-
-            column
-              .data()
-              .unique()
-              .sort()
-              .each(function (d, j) {
-                select.append('<option value="' + d + '">' + d + '</option>');
-              });
-          });
-        // Adding plan filter once table initialized
-        this.api()
-          .columns(3)
-          .every(function () {
-            var column = this;
-            var select = $(
-              '<select id="UserPlan" class="form-select text-capitalize"><option value=""> Select Plan </option></select>'
+              '<select id="UserPlan" class="form-select text-capitalize"><option value=""> Select Role </option></select>'
             )
               .appendTo('.user_plan')
               .on('change', function () {
@@ -432,21 +489,188 @@ $(function () {
               .each(function (d, j) {
                 select.append(
                   '<option value="' +
-                    statusObj[d].title +
-                    '" class="text-capitalize">' +
-                    statusObj[d].title +
-                    '</option>'
+                  d +
+                  '" class="text-capitalize">' +
+                  d +
+                  '</option>'
                 );
               });
           });
       }
     });
   }
+  // Delete Record
+  $('.add-new-user').on('click', '.data-submit', function (res) {
+    console.log(res.delegateTarget.getAttribute('id'))
+    if (res.delegateTarget.getAttribute('id') === 'addNewRoleForm') {
+      var form = document.getElementById('addNewRoleForm');
+      var formData = new FormData(form);
+      var actionUrl = form.getAttribute('action'); // Mengambil action URL dari form
+      console.log(formData)
+    }
 
+    if (res.delegateTarget.getAttribute('id') === 'addNewUserForm') {
+      var form = document.getElementById('addNewUserForm');
+      var formData = new FormData(form);
+      var actionUrl = form.getAttribute('action'); // Mengambil action URL dari form
+      console.log(formData)
+    }
+
+
+    $.ajax({
+      url: actionUrl,
+      type: 'POST',
+      data: formData,
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        console.log(response);
+        if (response.status === 'success') {
+          Swal.fire({
+            title: 'Success!',
+            text: response.message,
+            icon: 'success',
+            confirmButtonText: 'OK',
+            customClass: {
+              confirmButton: 'btn btn-success'
+            }
+          }).then(function () {
+            window.location.href = '/jobs';
+          });
+        } else {
+          Swal.fire({
+            title: 'Error!',
+            text: 'Please correct the highlighted fields.',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+          });
+        }
+      },
+      error: function (xhr) {
+        // console.log(xhr.responseText); // Lihat detail error
+        let errors = xhr.responseJSON ? xhr.responseJSON.errors : null;
+
+        if (errors) {
+          // Loop melalui error dan tampilkan ke pengguna
+          $.each(errors, function (key, value) {
+            console.log('Error pada ' + key + ': ' + value);
+          });
+          Swal.fire({
+            title: 'Error!',
+            text: 'Please correct the highlighted fields.',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+          });
+        }
+
+
+      }
+    });
+  });
   // Delete Record
   $('.datatables-users tbody').on('click', '.delete-record', function () {
-    dt_user.row($(this).parents('tr')).remove().draw();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Do you want to remove the data?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, remove it!',
+      cancelButtonText: 'No, cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // $('#editUserModal').modal('hide');
+        Swal.fire(
+          'Saved!',
+          'Your changes have been saved.',
+          'success'
+        )
+        dt_user.row($(this).parents('tr')).remove().draw();
+        // Submit form setelah konfirmasi
+        // event.target.submit();
+      }
+    });
   });
+  // Delete Record
+  $('.datatables-users tbody').on('click', '.delete-record', function () {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Do you want to remove the data?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, remove it!',
+      cancelButtonText: 'No, cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // $('#editUserModal').modal('hide');
+        Swal.fire(
+          'Saved!',
+          'Your changes have been saved.',
+          'success'
+        )
+        dt_user.row($(this).parents('tr')).remove().draw();
+        // Submit form setelah konfirmasi
+        // event.target.submit();
+      }
+    });
+  });
+  $(document).on('click', '.edit-button', function () {
+
+    var user = JSON.parse($(this).attr('data-user'));
+
+    // Isi modal dengan data pengguna
+    $('#edit_user_id').val(user.id);
+    $('#edit_nip').val(user.nip);
+    $('#edit_full_name').val(user.full_name);
+    $('#edit_username').val(user.username);
+    $('#edit_telegram_id').val(user.telegram_id);
+    $('#edit_email').val(user.email);
+    $('#edit_access_bot').val(user.access_bot);
+    $('#edit_status').val(user.status);
+    $('#edit_role').val(user.role_id); // Pastikan role_id ada di user
+
+    // Reset password field
+    $('#edit_password').val('');
+    // Tampilkan modal
+    $('#editUserModal').modal('show');
+  });
+
+  $('.role-edit-modal').on('click', function () {
+    var roleId = $(this).data('role-id');
+    var roleName = $(this).data('role-name');
+    var selectedSubMenus = $(this).data('role-submenus');
+    selectedSubMenus = selectedSubMenus.map(item => item
+      .sub_menu_id); // Ambil hanya sub_menu_id
+
+    // Set nilai pada modal form
+    $('#editModalRole #name-edit').val(roleName);
+    $('#editModalRole #roleId').val(roleId);
+
+    // Cek checkbox berdasarkan sub_menu_id yang sudah dimiliki role
+    $('input[name="sub_menus[]"]').each(function () {
+      if (selectedSubMenus.includes(parseInt($(this).val()))) {
+        $(this).prop('checked', true); // Centang checkbox jika ada di list
+      } else {
+        $(this).prop('checked', false); // Hilangkan centang jika tidak ada
+      }
+    });
+
+    // Tampilkan modal
+    $('#editModalRole').modal('show');
+  });
+
 
   // Filter form control to default size
   // ? setTimeout used for multilingual table initialization
@@ -497,6 +721,7 @@ $(function () {
         // Use this for enabling/changing valid/invalid class
         eleValidClass: '',
         rowSelector: function (field, ele) {
+
           // field is the field name & ele is the field element
           return '.mb-3';
         }
@@ -505,6 +730,12 @@ $(function () {
       // Submit the form when all fields are valid
       // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
       autoFocus: new FormValidation.plugins.AutoFocus()
+
     }
   });
+
+  function pp() {
+    console.log('tai')
+  }
+
 })();

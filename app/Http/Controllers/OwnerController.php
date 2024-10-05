@@ -35,7 +35,12 @@ class OwnerController extends Controller
         // Mengambil semua data user
         $users = User::with('role_id')->get();
         $usercek = User::where('email', $user->email)->with('role_id')->first();
-        $usercek->makeHidden(['password']);
+        if ($usercek) {
+            $users->makeHidden(['password']);
+            $usercek =  $usercek;
+        } else {
+            $usercek =  $user;
+        }
 
         return view('content.account.owner', [
             'menuArray' => $menus,
@@ -69,7 +74,12 @@ class OwnerController extends Controller
         // Mengambil semua data user
         $users = User::with('role_id')->get();
         $usercek = User::where('email', $user->email)->with('role_id')->first();
-        $usercek->makeHidden(['password']);
+        if ($usercek) {
+            $users->makeHidden(['password']);
+            $usercek =  $usercek;
+        } else {
+            $usercek =  $user;
+        }
 
         return view('content.account.package', [
             'menuArray' => $menus,

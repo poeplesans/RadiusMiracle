@@ -22,7 +22,12 @@ class MenuController extends Controller
         }
         DatabaseHelper::setDynamicConnection();
         $usercek = User::where('email', $user->email)->with('role_id')->first();
-        $usercek->makeHidden(['password']);
+        // $usercek->makeHidden(['password']);
+        if ($usercek) {
+            $usercek =  $usercek;
+        } else {
+            $usercek =  $user;
+        }
 
         return $usercek;
     }

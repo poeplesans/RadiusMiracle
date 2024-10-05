@@ -18,6 +18,49 @@ class MemberController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function apiUsersGet()
+    {
+        try {
+            $user = Auth::user();
+            if (!$user) {
+                return '';
+            }
+            $user['password'] = "";
+
+            // Ambil semua data pengguna
+            // Set dynamic connection
+            DatabaseHelper::setDynamicConnection();
+
+            // Mengambil semua data user
+            $users = User::with('role_id')->get();
+            
+
+            // Format data untuk respons
+            return response()->json([
+                'status' => 'success',
+                'data' => $users->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'nip' => $user->nip,
+                        'full_name' => $user->full_name,
+                        'email' => $user->email,
+                        'username' => $user->username,
+                        'telegram_id' => $user->telegram_id, // Pastikan ada kolom telegram_id di tabel User
+                        'access_bot' => $user->access_bot, // Pastikan ada kolom access_bot di tabel User
+                        'status' => $user->status,
+                        'role' => $user->role ? $user->role_id->name : null, // Mengambil nama role
+                        'role_id' => $user->role_id->id,
+                    ];
+                }),
+            ]);
+        } catch (\Exception $e) {
+            // Handle error dan log pesan errornya
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Internal Server Error'
+            ], 500);
+        }
+    }
 
     public function index()
     {
@@ -36,7 +79,12 @@ class MemberController extends Controller
         // Mengambil semua data user
         $users = User::with('role_id')->get();
         $usercek = User::where('email', $user->email)->with('role_id')->first();
-        $usercek->makeHidden(['password']);
+        if ($usercek) {
+            $usercek->makeHidden(['password']);
+            $usercek =  $usercek;
+        } else {
+            $usercek =  $user;
+        }
 
         // Mengambil semua role beserta sub_menu_id dari role_sub_menu
         $roles = Role::with(['roleSubMenus' => function ($query) {
@@ -54,7 +102,7 @@ class MemberController extends Controller
 
         ]);
     }
-    
+
 
 
     /**
@@ -65,7 +113,7 @@ class MemberController extends Controller
         DatabaseHelper::setDynamicConnection();
         $request->validate([
             'name' => 'required|string|max:255|unique:roles',
-            'sub_menus' => 'required|array', // memastikan sub_menus harus array
+            'sub_menus' => 'array', // memastikan sub_menus harus array
         ]);
 
         $roleName = $request->input('name');
@@ -89,7 +137,11 @@ class MemberController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Role and permissions have been saved successfully.');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Submenu added successfully!',
+            'redirect' => '/members' // URL untuk pengalihan
+        ]);
     }
 
     public function roleedit(Request $request)
@@ -197,10 +249,20 @@ class MemberController extends Controller
             'role.required' => 'The role is required.',
         ]);
 
+        if (!$validatedData) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'error!',
+                'redirect' => '/members' // URL untuk pengalihan
+            ]);
+        }
+
+
         User::create([
             'username' => $validatedData['username'],
             'email' => $validatedData['email'],
             'office_id' => $user['office_id'],
+            'password' => bcrypt($validatedData['password']),
         ]);
 
         DatabaseHelper::setDynamicConnection();
@@ -255,7 +317,7 @@ class MemberController extends Controller
     public function usersdelete($email)
     {
         $mainuser = User::where('email', $email)->first();
-        
+
         if (!$mainuser) {
             DatabaseHelper::setDynamicConnection();
             $user = User::where('email', $email)->first();

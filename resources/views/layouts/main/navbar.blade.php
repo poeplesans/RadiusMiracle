@@ -303,10 +303,10 @@
                     <img src="../resource/assets/img/avatars/1.png" alt class="rounded-circle" />
                   </div>
                 </div>
-                {{-- {{ $usercek }} --}}
+                {{-- {{ dd($usercek) }} --}}
                 <div class="flex-grow-1">
-                  <span class="fw-medium d-block lh-1">{{ $usercek->full_name ?? $usercek['username'] }}</span>
-                  <small>{{ $usercek->role_id->name ?? $usercek['role_id']['name'] }} - {{ $usercek->nip ?? $usercek['id'] }}</small>
+                  <span class="fw-medium d-block lh-1">{{ $usercek->full_name ?? $usercek->username }}</span>
+                  <small>{{ $usercek->role_id->name ?? $usercek->user_type }} - {{ $usercek->nip ?? $usercek->id }}</small>
                 </div>
               </div>
             </a>

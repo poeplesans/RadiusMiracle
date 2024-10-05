@@ -17,6 +17,7 @@ class SubMenuController extends Controller
         if (!$user) {
             return '';
         }
+        // return $user;
         DatabaseHelper::setDynamicConnection();
         $arraymenus = MenuHelper::getDynamicMenu();
         $menus = $arraymenus['menus'];
@@ -24,7 +25,13 @@ class SubMenuController extends Controller
         // Mengambil semua data user
         // $users = User::with('role_id')->get();
         $usercek = User::where('email', $user->email)->with('role_id')->first();
-        $usercek->makeHidden(['password']);
+        if ($usercek) {
+            $usercek =  $usercek;
+        } else {
+            $usercek =  $user;
+        }
+        
+        // $usercek->makeHidden(['password']);
 
         // dd($usercek);
         // return dd($menus);

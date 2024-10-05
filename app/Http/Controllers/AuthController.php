@@ -68,7 +68,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'office_id' => $office->id,
             'password' => Hash::make($request->password),
-            'user_type' => 'Creator',
+            'user_type' => 'creator',
         ]);
 
         UserOffice::create([
@@ -98,10 +98,10 @@ class AuthController extends Controller
     {
         Schema::connection($dbName)->create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('nip')->nullable();
+            $table->bigInteger('nip')->nullable();
             $table->string('full_name')->nullable();
             $table->string('username')->nullable();
-            $table->string('telegram_id')->nullable();
+            $table->bigInteger('telegram_id')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('access_bot', ['active', 'inactive'])->default('inactive');
@@ -143,7 +143,6 @@ class AuthController extends Controller
             $table->foreignId('header_id')->constrained('headers')->onDelete('cascade');
             $table->string('name')->nullable();
             $table->string('icon')->nullable();
-            $table->string('url')->nullable();
             $table->timestamps();
         });
 
@@ -151,7 +150,6 @@ class AuthController extends Controller
             $table->id();
             $table->foreignId('menu_id')->constrained('menus')->onDelete('cascade');
             $table->string('name')->nullable();
-            $table->string('icon')->nullable();
             $table->string('url')->nullable();
             $table->timestamps();
         });
@@ -162,11 +160,7 @@ class AuthController extends Controller
             $table->foreignId('sub_menu_id')->constrained('sub_menus')->onDelete('cascade');
             $table->timestamps();
         });
-        Schema::connection($dbName)->create('lines', function (Blueprint $table) {
-            $table->increments('id'); // Auto-incrementing primary key
-            $table->string('name', 255)->nullable(); // Nullable string with a length of 255
-            $table->text('data')->nullable(); // Nullable text field
-        });
+        
         Schema::connection($dbName)->create('invoices', function (Blueprint $table) {
             $table->id(); // Primary key
             $table->string('invoice')->unique();
@@ -191,19 +185,24 @@ class AuthController extends Controller
             $table->boolean('status')->default(true); // Status (active or inactive)
             $table->timestamps(); // created_at and updated_at
         });
-        Schema::connection($dbName)->create('points', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('line_id')->nullable();
-            $table->integer('map_id')->nullable();
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
-            $table->string('village', 45)->nullable();
-            $table->string('county', 45)->nullable();
-            $table->string('state', 45)->nullable();
-            $table->string('region', 45)->nullable();
-            $table->string('display_name', 255)->nullable();
-            $table->timestamps(); // For created_at and updated_at
-        });
+        // Schema::connection($dbName)->create('points', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->unsignedBigInteger('line_id')->nullable();
+        //     $table->integer('map_id')->nullable();
+        //     $table->decimal('latitude', 10, 7)->nullable();
+        //     $table->decimal('longitude', 10, 7)->nullable();
+        //     $table->string('village', 45)->nullable();
+        //     $table->string('county', 45)->nullable();
+        //     $table->string('state', 45)->nullable();
+        //     $table->string('region', 45)->nullable();
+        //     $table->string('display_name', 255)->nullable();
+        //     $table->timestamps(); // For created_at and updated_at
+        // });
+        // Schema::connection($dbName)->create('lines', function (Blueprint $table) {
+        //     $table->increments('id'); // Auto-incrementing primary key
+        //     $table->string('name', 255)->nullable(); // Nullable string with a length of 255
+        //     $table->text('data')->nullable(); // Nullable text field
+        // });
     }
 
 
@@ -271,7 +270,7 @@ class AuthController extends Controller
 
         // Cek database pengguna berdasarkan office_id
         $office = Office::find($user->office_id);
-        return $office;
+        // return $office;
         if (!$office) {
             return response()->json(['error' => 'Office not found'], 404);
         }

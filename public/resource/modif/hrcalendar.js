@@ -24,11 +24,11 @@ document.addEventListener('DOMContentLoaded', function () {
       addEventSidebar = document.getElementById('addEventSidebar'),
       appOverlay = document.querySelector('.app-overlay'),
       calendarsColor = {
-        business: 'primary',
-        holiday: 'success',
-        personal: 'danger',
-        family: 'warning',
-        ETC: 'info'
+        wh: 'primary',
+        prs: 'success',
+        abs: 'danger',
+        lt: 'warning',
+        fd: 'info'
       },
       offcanvasTitle = document.querySelector('.offcanvas-title'),
       btnToggleSidebar = document.querySelector('.btn-toggle-sidebar'),
@@ -38,10 +38,10 @@ document.addEventListener('DOMContentLoaded', function () {
       eventTitle = document.querySelector('#eventTitle'),
       eventStartDate = document.querySelector('#eventStartDate'),
       eventEndDate = document.querySelector('#eventEndDate'),
-      eventUrl = document.querySelector('#eventURL'),
+      // eventUrl = document.querySelector('#eventURL'),
       eventLabel = $('#eventLabel'), // ! Using jquery vars due to select2 jQuery dependency
-      eventGuests = $('#eventGuests'), // ! Using jquery vars due to select2 jQuery dependency
-      eventLocation = document.querySelector('#eventLocation'),
+      // eventGuests = $('#eventGuests'), // ! Using jquery vars due to select2 jQuery dependency
+      // eventLocation = document.querySelector('#eventLocation'),
       eventDescription = document.querySelector('#eventDescription'),
       allDaySwitch = document.querySelector('.allDay-switch'),
       selectAll = document.querySelector('.select-all'),
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
       inlineCalendar = document.querySelector('.inline-calendar');
 
     let eventToUpdate,
-      currentEvents = events, // Assign app-calendar-events.js file events (assume events from API) to currentEvents (browser store/object) to manage and update calender events
+      currentEvents = [], // Assign app-calendar-events.js file events (assume events from API) to currentEvents (browser store/object) to manage and update calender events
       isFormValid = false,
       inlineCalInstance;
 
@@ -74,38 +74,6 @@ document.addEventListener('DOMContentLoaded', function () {
         templateResult: renderBadges,
         templateSelection: renderBadges,
         minimumResultsForSearch: -1,
-        escapeMarkup: function (es) {
-          return es;
-        }
-      });
-    }
-
-    // Event Guests (select2)
-    if (eventGuests.length) {
-      function renderGuestAvatar(option) {
-        if (!option.id) {
-          return option.text;
-        }
-        var $avatar =
-          "<div class='d-flex flex-wrap align-items-center'>" +
-          "<div class='avatar avatar-xs me-2'>" +
-          "<img src='" +
-          assetsPath +
-          'img/avatars/' +
-          $(option.element).data('avatar') +
-          "' alt='avatar' class='rounded-circle' />" +
-          '</div>' +
-          option.text +
-          '</div>';
-
-        return $avatar;
-      }
-      eventGuests.wrap('<div class="position-relative"></div>').select2({
-        placeholder: 'Select value',
-        dropdownParent: eventGuests.parent(),
-        closeOnSelect: false,
-        templateResult: renderGuestAvatar,
-        templateSelection: renderGuestAvatar,
         escapeMarkup: function (es) {
           return es;
         }
@@ -140,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Inline sidebar calendar (flatpicker)
     if (inlineCalendar) {
-      console.log('Inline sidebar calendar (flatpicker)')
+      // console.log('Inline sidebar calendar (flatpicker)')
       inlineCalInstance = inlineCalendar.flatpickr({
         monthSelectorType: 'static',
         inline: true
@@ -149,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Event click function
     function eventClick(info) {
-      console.log('eventClick')
+      // console.log('eventClick')
       eventToUpdate = info.event;
       if (eventToUpdate.url) {
         info.jsEvent.preventDefault();
@@ -172,22 +140,9 @@ document.addEventListener('DOMContentLoaded', function () {
         ? end.setDate(eventToUpdate.end, true, 'Y-m-d')
         : end.setDate(eventToUpdate.start, true, 'Y-m-d');
       eventLabel.val(eventToUpdate.extendedProps.calendar).trigger('change');
-      eventToUpdate.extendedProps.location !== undefined
-        ? (eventLocation.value = eventToUpdate.extendedProps.location)
-        : null;
-      eventToUpdate.extendedProps.guests !== undefined
-        ? eventGuests.val(eventToUpdate.extendedProps.guests).trigger('change')
-        : null;
       eventToUpdate.extendedProps.description !== undefined
         ? (eventDescription.value = eventToUpdate.extendedProps.description)
         : null;
-
-      // // Call removeEvent function
-      // btnDeleteEvent.addEventListener('click', e => {
-      //   removeEvent(parseInt(eventToUpdate.id));
-      //   // eventToUpdate.remove();
-      //   bsAddEventSidebar.hide();
-      // });
     }
 
     // Modify sidebar toggler
@@ -217,73 +172,23 @@ document.addEventListener('DOMContentLoaded', function () {
       return selected;
     }
 
-    // --------------------------------------------------------------------------------------------------
-    // AXIOS: fetchEvents
-    // * This will be called by fullCalendar to fetch events. Also this can be used to refetch events.
-    // --------------------------------------------------------------------------------------------------
-    // function fetchEvents(info, successCallback) {
-    //   // Fetch Events from API endpoint reference
-    //   $.ajax(
-    //     {
-    //       url: '/absensi/get',
-    //       type: 'GET',
-    //       success: function (result) {
-    //         console.log(result.events)
-    //         // Get requested calendars as Array
-    //         var calendars = selectedCalendars();
-    //         console.log('Selected Calendars:', calendars);
-    //         // Filter event berdasarkan kalender yang dipilih
-    //         var filteredEvents = result.filter(event => calendars.includes(event.extendedProps?.calendar));
-    //         return [result.filter(event => calendars.includes(event.extendedProps?.calendar))]
-    //       },
-    //       error: function (error) {
-    //         console.log(error);
-    //       }
-    //     }
-    //   );
-
-    //   let calendars = selectedCalendars();
-    //   // We are reading event object from app-calendar-events.js file directly by including that file above app-calendar file.
-    //   // You should make an API call, look into above commented API call for reference
-    //   let selectedEvents = currentEvents.filter(function (event) {
-    //     console.log(event.extendedProps.calendar.toLowerCase());
-    //     return calendars.includes(event.extendedProps.calendar.toLowerCase());
-    //   });
-    //   // if (selectedEvents.length > 0) {
-    //   successCallback(selectedEvents);
-    //   // }
-    // }
-
     function fetchEvents(info, successCallback) {
-      // Fetch Events from API endpoint
-      $.ajax({
-        url: '/hr/calendar/api',
-        type: 'GET',
-        success: function (result) {
-          console.log(result); // Lihat format data yang diterima dari API
+      var calendars = selectedCalendars();
+      // console.log('Selected Calendars:', calendars);
 
-          // Ambil kalender yang dipilih sebagai array
-          var calendars = selectedCalendars();
-          console.log('Selected Calendars:', calendars);
+      // Filter event berdasarkan kalender yang dipilih
+      var filteredEvents = usersData.filter(event => calendars.includes(event.extendedProps?.calendar));
 
-          // Filter event berdasarkan kalender yang dipilih
-          var filteredEvents = result.filter(event => calendars.includes(event.extendedProps?.calendar));
+      console.log('Filtered Events:', usersData);
 
-          console.log('Filtered Events:', filteredEvents);
-
-          // Panggil successCallback dengan data event yang difilter
-          let selectedEvents = filteredEvents.filter(function (event) {
-            // console.log(event.extendedProps.calendar.toLowerCase());
-            return calendars.includes(event.extendedProps.calendar.toLowerCase());
-          });
-          // if (selectedEvents.length > 0) {
-          successCallback(selectedEvents);
-          // }
-        },
-        error: function (error) {
-          console.log('Error fetching events:', error);
-        }
+      // Panggil successCallback dengan data event yang difilter
+      let selectedEvents = filteredEvents.filter(function (event) {
+        // console.log(event.extendedProps.calendar.toLowerCase());
+        return calendars.includes(event.extendedProps.calendar.toLowerCase());
       });
+      // if (selectedEvents.length > 0) {
+      successCallback(selectedEvents);
+      // }
     }
 
 
@@ -317,14 +222,14 @@ document.addEventListener('DOMContentLoaded', function () {
         return ['fc-event-' + colorName];
       },
       eventDrop: function (info) {
-        updateEventDrop(info.event)
-        console.log('Event "' + info.event.title + '" dipindahkan ke: ' + info.event.start + ' - ' + info.event.end);
+        // updateEventDrop(info.event)
+        // console.log('Event "' + info.event.title + '" dipindahkan ke: ' + info.event.start + ' - ' + info.event.end);
       },
       dateClick: function (info) {
-        console.log('dateClick')
+        // console.log('dateClick')
         let date = moment(info.date).format('YYYY-MM-DD');
         resetValues();
-        bsAddEventSidebar.show();
+        // bsAddEventSidebar.show();
 
         // For new event set offcanvas title text: Add Event
         if (offcanvasTitle) {
@@ -338,15 +243,15 @@ document.addEventListener('DOMContentLoaded', function () {
         eventEndDate.value = date;
       },
       eventClick: function (info) {
-        console.log('eventClick')
+        // console.log('eventClick')
         eventClick(info);
       },
       datesSet: function () {
-        console.log('datesSet')
+        // console.log('datesSet')
         modifyToggler();
       },
       viewDidMount: function () {
-        console.log('viewDidMount')
+        // console.log('viewDidMount')
         modifyToggler();
       }
     });
@@ -419,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function addEvent(eventData) {
       // ? Add new event data to current events object and refetch it to display on calender
       // ? You can write below code to AJAX call success response
-      console.log('Add Event')
+      // console.log('Add Event')
       currentEvents.push(eventData);
       calendar.refetchEvents();
 
@@ -430,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Update Event
     function updateEventDrop(EventDrop) {
-      console.log(EventDrop._def.title)
+      // console.log(EventDrop._def.title)
       // Kamu juga bisa menyimpan perubahan ini ke server dengan melakukan AJAX request
       // Ambil CSRF token dari meta tag
       // var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -445,13 +350,13 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
           id: EventDrop._def.publicId, // ID event dari FullCalendar
           start: EventDrop.start.toISOString(), // Tanggal mulai setelah dipindah
-          end: EventDrop.end.toISOString() ? EventDrop.end.toISOString() : null // Tanggal akhir (jika ada)
+          end: EventDrop.end ? EventDrop.end.toISOString() : null // Tanggal akhir (jika ada)
         },
         success: function (response) {
           Swal.fire({
             title: "Good job!",
             text: "Event " + EventDrop._def.title + " berhasil diperbarui",
-            // timer: 1000,
+            timer: 1000,
             icon: "success"
           });
         },
@@ -459,6 +364,7 @@ document.addEventListener('DOMContentLoaded', function () {
           Swal.fire({
             title: "Sorry!",
             text: "Gagal memperbarui event!",
+            timer: 1000,
             icon: "error"
           });
         }
@@ -472,7 +378,7 @@ document.addEventListener('DOMContentLoaded', function () {
       eventData.id = parseInt(eventData.id);
       currentEvents[currentEvents.findIndex(el => el.id === eventData.id)] = eventData; // Update event by id
       calendar.refetchEvents();
-      console.log('Update Event')
+      // console.log('Update Event')
 
       // ? To update event directly to calender (won't update currentEvents object)
       // let propsToUpdate = ['id', 'title', 'url'];
@@ -491,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return event.id != eventId;
       });
       calendar.refetchEvents();
-      console.log('Remove Event')
+      // console.log('Remove Event')
       // ? To delete event directly to calender (won't update currentEvents object)
       // removeEventInCalendar(eventId);
     }
@@ -545,19 +451,19 @@ document.addEventListener('DOMContentLoaded', function () {
             endStr: eventEndDate.value,
             display: 'block',
             extendedProps: {
-              location: eventLocation.value,
-              guests: eventGuests.val(),
+              // location: eventLocation.value,
+              // guests: eventGuests.val(),
               calendar: eventLabel.val(),
               description: eventDescription.value
             }
           };
-          if (eventUrl.value) {
-            newEvent.url = eventUrl.value;
-          }
+          // if (eventUrl.value) {
+          //   newEvent.url = eventUrl.value;
+          // }
           if (allDaySwitch.checked) {
             newEvent.allDay = true;
           }
-          console.log('newEvent')
+          // console.log('newEvent')
           addEvent(newEvent);
           bsAddEventSidebar.hide();
         }
@@ -570,17 +476,17 @@ document.addEventListener('DOMContentLoaded', function () {
             title: eventTitle.value,
             start: eventStartDate.value,
             end: eventEndDate.value,
-            url: eventUrl.value,
+            // url: eventUrl.value,
             extendedProps: {
-              location: eventLocation.value,
-              guests: eventGuests.val(),
+              // location: eventLocation.value,
+              // guests: eventGuests.val(),
               calendar: eventLabel.val(),
               description: eventDescription.value
             },
             display: 'block',
             allDay: allDaySwitch.checked ? true : false
           };
-          console.log('Update event')
+          // console.log('Update event')
           updateEvent(eventData);
           bsAddEventSidebar.hide();
         }
@@ -589,7 +495,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Call removeEvent function
     btnDeleteEvent.addEventListener('click', e => {
-      console.log('Call removeEvent function')
+      // console.log('Call removeEvent function')
       removeEvent(parseInt(eventToUpdate.id));
       // eventToUpdate.remove();
       bsAddEventSidebar.hide();
@@ -599,12 +505,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // ------------------------------------------------
     function resetValues() {
       eventEndDate.value = '';
-      eventUrl.value = '';
+      // eventUrl.value = '';
       eventStartDate.value = '';
       eventTitle.value = '';
-      eventLocation.value = '';
+      // eventLocation.value = '';
       allDaySwitch.checked = false;
-      eventGuests.val('').trigger('change');
+      // eventGuests.val('').trigger('change');
       eventDescription.value = '';
     }
 
@@ -652,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Jump to date on sidebar(inline) calendar change
     inlineCalInstance.config.onChange.push(function (date) {
-      console.log('Jump to date on sidebar(inline) calendar change')
+      // console.log('Jump to date on sidebar(inline) calendar change')
       calendar.changeView(calendar.view.type, moment(date[0]).format('YYYY-MM-DD'));
       modifyToggler();
       appCalendarSidebar.classList.remove('show');

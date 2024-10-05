@@ -9,8 +9,11 @@
 <!-- Vendors JS -->
 @section('page-down')
     <!-- Page JS -->
-    <script src="../resource/assets/js/app-calendar-events.js"></script>
-    <script src="../resource/assets/js/app-calendar.js"></script>
+    <script>
+        var usersData = @json($eventData);
+    </script>
+    {{-- <script src="../resource/assets/js/app-calendar-events.js"></script> --}}
+    <script src="../resource/modif/hrcalendar.js"></script>
     <script src="../resource/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
     <script src="../resource/assets/js/extended-ui-sweetalert2.js"></script>
 @endsection
@@ -23,8 +26,7 @@
                 <div class="col app-calendar-sidebar" id="app-calendar-sidebar">
                     <div class="border-bottom p-4 my-sm-0 mb-3">
                         <div class="d-grid">
-                            <button class="btn btn-primary btn-toggle-sidebar" data-bs-toggle="offcanvas"
-                                data-bs-target="#addEventSidebar" aria-controls="addEventSidebar">
+                            <button class="btn btn-primary btn-toggle-sidebar" data-bs-toggle="offcanvas">
                                 <i class="bx bx-plus me-1"></i>
                                 <span class="align-middle">Add Event</span>
                             </button>
@@ -50,30 +52,31 @@
                         </div>
 
                         <div class="app-calendar-events-filter">
-                            <div class="form-check form-check-danger mb-2">
+                            <div class="form-check form-check-success mb-2">
                                 <input class="form-check-input input-filter" type="checkbox" id="select-personal"
-                                    data-value="personal" checked>
-                                <label class="form-check-label" for="select-personal">Personal</label>
+                                    data-value="prs" checked>
+                                <label class="form-check-label" for="select-personal">Present [ OnTime ]</label>
                             </div>
                             <div class="form-check mb-2">
                                 <input class="form-check-input input-filter" type="checkbox" id="select-business"
-                                    data-value="business" checked>
-                                <label class="form-check-label" for="select-business">Business</label>
+                                    data-value="wh" checked>
+                                <label class="form-check-label" for="select-business">Holiday [ Kerja di Hari
+                                    Libur ]</label>
+                            </div>
+                            <div class="form-check form-check-danger mb-2">
+                                <input class="form-check-input input-filter" type="checkbox" id="select-family"
+                                    data-value="abs" checked>
+                                <label class="form-check-label" for="select-family">Absent [ Tidak Hadir ]</label>
                             </div>
                             <div class="form-check form-check-warning mb-2">
-                                <input class="form-check-input input-filter" type="checkbox" id="select-family"
-                                    data-value="family" checked>
-                                <label class="form-check-label" for="select-family">Family</label>
-                            </div>
-                            <div class="form-check form-check-success mb-2">
                                 <input class="form-check-input input-filter" type="checkbox" id="select-holiday"
-                                    data-value="holiday" checked>
-                                <label class="form-check-label" for="select-holiday">Holiday</label>
+                                    data-value="lt" checked>
+                                <label class="form-check-label" for="select-holiday">Late [ Terlambat ]</label>
                             </div>
                             <div class="form-check form-check-info">
-                                <input class="form-check-input input-filter" type="checkbox" id="select-etc"
-                                    data-value="etc" checked>
-                                <label class="form-check-label" for="select-etc">ETC</label>
+                                <input class="form-check-input input-filter" type="checkbox" id="select-etc" data-value="fd"
+                                    checked>
+                                <label class="form-check-label" for="select-etc">Full Day [ Izin ]</label>
                             </div>
                         </div>
                     </div>
@@ -100,28 +103,28 @@
                         <div class="offcanvas-body">
                             <form class="event-form pt-0" id="eventForm" onsubmit="return false">
                                 <div class="mb-3">
-                                    <label class="form-label" for="eventTitle">Title</label>
+                                    <label class="form-label" for="eventTitle">Employe Name</label>
                                     <input type="text" class="form-control" id="eventTitle" name="eventTitle"
                                         placeholder="Event Title" />
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="eventLabel">Label</label>
+                                    <label class="form-label" for="eventLabel">Absent</label>
                                     <select class="select2 select-event-label form-select" id="eventLabel"
                                         name="eventLabel">
-                                        <option data-label="primary" value="Business" selected>Business</option>
-                                        <option data-label="danger" value="Personal">Personal</option>
-                                        <option data-label="warning" value="Family">Family</option>
-                                        <option data-label="success" value="Holiday">Holiday</option>
-                                        <option data-label="info" value="ETC">ETC</option>
+                                        <option data-label="primary" value="wh" selected>Holiday</option>
+                                        <option data-label="danger" value="abs">Absent</option>
+                                        <option data-label="warning" value="lt">Late</option>
+                                        <option data-label="success" value="prs">Present</option>
+                                        <option data-label="info" value="fd">Izin</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="eventStartDate">Start Date</label>
+                                    <label class="form-label" for="eventStartDate">Check In</label>
                                     <input type="text" class="form-control" id="eventStartDate" name="eventStartDate"
                                         placeholder="Start Date" />
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label" for="eventEndDate">End Date</label>
+                                    <label class="form-label" for="eventEndDate">Check Out</label>
                                     <input type="text" class="form-control" id="eventEndDate" name="eventEndDate"
                                         placeholder="End Date" />
                                 </div>
@@ -135,29 +138,7 @@
                                         <span class="switch-label">All Day</span>
                                     </label>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label" for="eventURL">Event URL</label>
-                                    <input type="url" class="form-control" id="eventURL" name="eventURL"
-                                        placeholder="https://www.google.com" />
-                                </div>
-                                <div class="mb-3 select2-primary">
-                                    <label class="form-label" for="eventGuests">Add Guests</label>
-                                    <select class="select2 select-event-guests form-select" id="eventGuests"
-                                        name="eventGuests" multiple>
-                                        <option data-avatar="1.png" value="Jane Foster">Jane Foster</option>
-                                        <option data-avatar="3.png" value="Donna Frank">Donna Frank</option>
-                                        <option data-avatar="5.png" value="Gabrielle Robertson">Gabrielle Robertson
-                                        </option>
-                                        <option data-avatar="7.png" value="Lori Spears">Lori Spears</option>
-                                        <option data-avatar="9.png" value="Sandy Vega">Sandy Vega</option>
-                                        <option data-avatar="11.png" value="Cheryl May">Cheryl May</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label" for="eventLocation">Location</label>
-                                    <input type="text" class="form-control" id="eventLocation" name="eventLocation"
-                                        placeholder="Enter Location" />
-                                </div>
+
                                 <div class="mb-3">
                                     <label class="form-label" for="eventDescription">Description</label>
                                     <textarea class="form-control" name="eventDescription" id="eventDescription"></textarea>

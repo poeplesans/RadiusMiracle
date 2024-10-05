@@ -1,6 +1,6 @@
 <!-- Dashboards -->
 <li class="menu-item">
-    <a href="/home" class="menu-link">
+    <a href="/" class="menu-link">
         <i class="menu-icon tf-icons bx bx-objects-horizontal-right"></i>
         <div data-i18n="Dashboards">Dashboards</div>
     </a>
@@ -9,8 +9,7 @@
     {{-- {{ dd($menuArray) }} --}}
     @foreach ($menuArray as $header => $menus)
         <li class="menu-header small text-uppercase">
-            <span class="menu-header-text"
-                data-i18n="{{ $header }}">{{ $header }}</span>
+            <span class="menu-header-text" data-i18n="{{ $header }}">{{ $header }}</span>
         </li>
 
         @if (isset($menus['menus']) && is_array($menus['menus']))
@@ -27,8 +26,7 @@
                             @foreach ($subMenus as $subMenu)
                                 @if (isset($subMenu['url']) && isset($subMenu['name']))
                                     <li class="menu-item">
-                                        <a href="{{ $subMenu['url'] }}"
-                                            class="menu-link">
+                                        <a href="{{ $subMenu['url'] }}" class="menu-link">
                                             <div>{{ $subMenu['name'] }}</div>
                                         </a>
                                     </li>
@@ -40,28 +38,28 @@
             @endforeach
         @endif
     @endforeach
+    <!-- Misc -->
+    <li class="menu-header small text-uppercase mt-3">
+        <span class="menu-header-text" data-i18n="Misc">Misc</span>
+    </li>
+    <li class="menu-item">
+        <a href="https://pixinvent.ticksy.com/" target="_blank" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-help-circle"></i>
+            <div data-i18n="FAQ">FAQ</div>
+        </a>
+    </li>
+    <li class="menu-item">
+        <a href="https://pixinvent.ticksy.com/" target="_blank" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-support"></i>
+            <div data-i18n="Support">Support</div>
+        </a>
+    </li>
+    <li class="menu-item">
+        <a href="https://demos.pixinvent.com/frest-html-admin-template/documentation/" target="_blank"
+            class="menu-link">
+            <i class="menu-icon tf-icons bx bx-file"></i>
+            <div data-i18n="Documentation">Documentation</div>
+        </a>
+    </li>
 
 </ul>
-
-<!-- Misc -->
-<li class="menu-header small text-uppercase">
-    <span class="menu-header-text" data-i18n="Misc">Misc</span>
-</li>
-<li class="menu-item">
-    <a href="https://pixinvent.ticksy.com/" target="_blank" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-help-circle"></i>
-        <div data-i18n="FAQ">FAQ</div>
-    </a>
-</li>
-<li class="menu-item">
-    <a href="https://pixinvent.ticksy.com/" target="_blank" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-support"></i>
-        <div data-i18n="Support">Support</div>
-    </a>
-</li>
-<li class="menu-item">
-    <a href="https://demos.pixinvent.com/frest-html-admin-template/documentation/" target="_blank" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-file"></i>
-        <div data-i18n="Documentation">Documentation</div>
-    </a>
-</li>

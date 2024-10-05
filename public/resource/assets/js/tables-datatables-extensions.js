@@ -90,6 +90,7 @@ $(function () {
   // --------------------------------------------------------------------
 
   if (dt_fixedheader_table.length) {
+    console.log(assetsPath)
     var dt_fixedheader = dt_fixedheader_table.DataTable({
       ajax: assetsPath + 'json/table-datatable.json',
       columns: [

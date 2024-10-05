@@ -7,6 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Container - Layouts | Frest - Bootstrap Admin Template</title>
 
@@ -151,8 +152,8 @@
                     <!-- Content -->
 
                     {{-- <div class="m-5 flex-grow-1 container-p-y"> --}}
-                        @yield('container')
-                        <!--/ Layout Demo -->
+                    @yield('container')
+                    <!--/ Layout Demo -->
                     {{-- </div> --}}
                     <!-- / Content -->
 
@@ -202,48 +203,9 @@
 
     <!-- Main JS -->
     <script src="../resource/assets/js/main.js"></script>
-    
+
     <!--Import From File Down -->
     @yield('page-down')
-    {{-- @yield('page-script') --}}
-    {{-- <script src="../resource/assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="../resource/assets/vendor/libs/popper/popper.js"></script>
-    <script src="../resource/assets/vendor/js/bootstrap.js"></script>
-    <script src="../resource/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="../resource/assets/vendor/libs/hammer/hammer.js"></script>
-    <script src="../resource/assets/vendor/libs/i18n/i18n.js"></script>
-    <script src="../resource/assets/vendor/libs/typeahead-js/typeahead.js"></script>
-    <script src="../resource/assets/vendor/js/menu.js"></script>
-
-    <!-- endbuild -->
-
-    <!-- Vendors JS -->
-    
-    <script src="../resource/assets/vendor/libs/apex-charts/apexcharts.js"></script>
-    <script src="../resource/assets/vendor/libs/dropzone/dropzone.js"></script>
-    <script src="../resource/assets/vendor/libs/sweetalert2/sweetalert2.js"></script> --}}
-
-
-    {{-- <!-- Main JS -->
-    <script src="../resource/assets/js/main.js"></script>
-
-    <!-- Page JS -->
-    <script src="../resource/assets/js/dashboards-analytics.js"></script>
-    <script src="../resource/assets/js/extended-ui-sweetalert2.js"></script>
-
-    <!-- Page JS Online -->
-
-    <!-- Kemudian muat Bootstrap JS dan skrip lainnya -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.3.0/typeahead.bundle.min.js"></script>
-    <!-- Select2 -->
-
-
-    <!-- Page JS -->
-    <script src="../resource/assets/vendor/libs/select2/select2.js"></script>
-    <script src="../resource/assets/js/forms-selects.js"></script>
-    <script src="../resource/assets/js/forms-typeahead.js"></script>
-    <script src="../resource/assets/js/forms-file-upload.js"></script> --}}
-    {{-- <script src="../resource/assets/js/pages-pricing.js"></script> --}}
 
 
 </body>

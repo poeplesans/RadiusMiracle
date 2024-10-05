@@ -33,11 +33,12 @@ class MenuHelper
         if (in_array($user->user_type, ['owner', 'creator'])) {
             $role = 1;
             $usercek = User::where('email', $user->email)->first();
+            // $usercek->makeHidden(['password']);
             $usercek['role_id'] = [
                 'name' => 'SuperAdmin',
                 'nip' => 1
             ];
-            $usercek->makeHidden(['password']);
+            // return response()->json($usercek);
         } else {
             DatabaseHelper::setDynamicConnection();
             $usercek = User::where('email', $user->email)->with('role_id')->first();
@@ -77,13 +78,14 @@ class MenuHelper
 
             // return dd($menus);
         } else {
+            // return dd($role);
             // Jika bukan owner, filter berdasarkan role user
             $menus = DB::connection($dbName)->table('headers')
                 ->join('menus', 'headers.id', '=', 'menus.header_id')
                 ->join('sub_menus', 'menus.id', '=', 'sub_menus.menu_id')
                 ->join('role_sub_menu', 'sub_menus.id', '=', 'role_sub_menu.sub_menu_id')
                 ->join('roles', 'role_sub_menu.role_id', '=', 'roles.id')
-                ->where('roles.id', $role->role) // Sesuaikan filter berdasarkan peran
+                ->where('roles.id', $role) // Sesuaikan filter berdasarkan peran
                 ->select(
                     'headers.id as header_id',
                     'headers.name as header_name',

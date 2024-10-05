@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    protected $fillable = ['full_name','username','nip','telegram_id','username', 'email', 'password', 'office_id','role','status'];
+    protected $fillable = ['full_name','username','nip','telegram_id','username', 'email', 'password', 'user_type','office_id','role','status'];
 
     public function office()
     {

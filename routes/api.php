@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NetwatchController;
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +20,11 @@ use App\Http\Controllers\NetwatchController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Users atau Members
+});
 
+// Route::get('/member/api', [MemberController::class, 'apiUsersGet'])->name('members.user.api'); // API GET
 
 
 Route::post('/mikrotik/netwatch-log', [NetwatchController::class, 'store']);
