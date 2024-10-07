@@ -91,7 +91,7 @@ class MemberController extends Controller
             $query->select('role_id', 'sub_menu_id');
         }])->withCount('userrole')->get();
 
-        //  return dd($roles);
+        //  return dd($menus);
 
         // Return ke view dengan data menu, users, roles, dan role_sub_menus
         return view('content.management.member', [
@@ -263,6 +263,7 @@ class MemberController extends Controller
             'email' => $validatedData['email'],
             'office_id' => $user['office_id'],
             'password' => bcrypt($validatedData['password']),
+            'user_type' => 'member'
         ]);
 
         DatabaseHelper::setDynamicConnection();

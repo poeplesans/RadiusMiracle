@@ -7,6 +7,7 @@
 
 // Datatable (jquery)
 $(function () {
+    
     var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Ambil CSRF token dari meta tag
     var apiUrl = '/members/api'; // URL API
 
@@ -63,6 +64,7 @@ $(function () {
         })
             .then(response => {
                 // console.log(response)
+                console.log('Filtered Events:', usersData);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -70,7 +72,8 @@ $(function () {
             })
             .then(data => {
                 if (data.status === 'success') {
-                    return data.data; // Mengambil data jika status success
+                    return usersData; // Mengambil data jika status success
+                    // return data.data; // Mengambil data jika status success
                 } else {
                     throw new Error('Error fetching data');
                 }
@@ -82,23 +85,24 @@ $(function () {
     }
     // Users datatable
     if (dt_user_table.length) {
+        // console.log(usersData)
         var dt_user = dt_user_table.DataTable({
-            // ajax: assetsPath + 'json/user-list.json', // JSON file to add data
-            ajax: function (data, callback, settings) {
-                // Panggil fungsi fetchUserData yang sudah dibuat
-                fetchUserData(apiUrl, csrfToken)
-                    .then(responseData => {
-                        callback({
-                            data: responseData // Data yang diterima dari API
-                        });
-                    })
-                    .catch(error => {
-                        // console.error('Error in DataTable:', error);
-                        callback({
-                            data: [] // Kembalikan array kosong jika ada error
-                        });
-                    });
-            },
+            data: usersData, // JSON file to add data
+            // ajax: function (data, callback, settings) {
+            //     // Panggil fungsi fetchUserData yang sudah dibuat
+            //     fetchUserData(apiUrl, csrfToken)
+            //         .then(responseData => {
+            //             callback({
+            //                 data: responseData // Data yang diterima dari API
+            //             });
+            //         })
+            //         .catch(error => {
+            //             // console.error('Error in DataTable:', error);
+            //             callback({
+            //                 data: [] // Kembalikan array kosong jika ada error
+            //             });
+            //         });
+            // },
             columns: [
                 // columns according to JSON
                 { data: '' },

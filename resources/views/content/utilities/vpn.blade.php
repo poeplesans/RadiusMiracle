@@ -13,6 +13,9 @@
 
 @section('page-down')
     <!-- Vendors JS -->
+    <script>
+        var usersData = @json($users);
+    </script>
     <script src="../resource/assets/vendor/libs/moment/moment.js"></script>
     <script src="../resource/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
     <script src="../resource/assets/vendor/libs/select2/select2.js"></script>
@@ -24,10 +27,11 @@
     <script src="../resource/assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
     <script src="../resource/assets/js/extended-ui-sweetalert2.js"></script>
     <!-- Page JS -->
-    <script src="../resource/modif/users.js"></script>
+    <script src="../resource/modif/vpn.js"></script>
 @endsection
 
 @section('container')
+    {{-- {{ $users }} --}}
     <div class="role-list m-5 flex-grow-1 container-p-y">
         <!-- Fixed Header -->
         <div class="row g-4 mb-4">

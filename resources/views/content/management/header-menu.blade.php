@@ -183,7 +183,7 @@
                                     <th class="text-center">Count Menu</th>
                                     <th class="text-center">Count Sub-Menu</th>
                                     <th class="text-center">Icon</th>
-                                    <th class="text-center">Url</th>
+                                    {{-- <th class="text-center">Url</th> --}}
                                     <th class="text-center">Create At</th>
                                     <th class="text-center">Update AT</th>
                                     <th class="text-center">Action</th>
@@ -219,7 +219,7 @@
                                                 </td>
                                                 <td class="small text-center">{{ $header }}</td>
                                                 <td class="small "><i class="{{ $subMenus['icon'] }}"></i> {{ $subMenus['icon'] }}</td>
-                                                <td class="small text-center">{{ $subMenus['url'] }}</td>
+                                                {{-- <td class="small text-center">{{ $subMenus['url'] }}</td> --}}
                                                 <td class="small text-center">{{ $subMenus['created_at'] }}</td>
                                                 <td class="small text-center">{{ $subMenus['updated_at'] }}</td>
                                                 <td class="small text-center" style="">
