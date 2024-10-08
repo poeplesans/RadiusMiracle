@@ -7,7 +7,7 @@
 
 // Datatable (jquery)
 $(function () {
-    
+
     var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Ambil CSRF token dari meta tag
     var apiUrl = '/members/api'; // URL API
 
@@ -85,33 +85,18 @@ $(function () {
     }
     // Users datatable
     if (dt_user_table.length) {
-        // console.log(usersData)
+        console.log(usersData)
         var dt_user = dt_user_table.DataTable({
             data: usersData, // JSON file to add data
-            // ajax: function (data, callback, settings) {
-            //     // Panggil fungsi fetchUserData yang sudah dibuat
-            //     fetchUserData(apiUrl, csrfToken)
-            //         .then(responseData => {
-            //             callback({
-            //                 data: responseData // Data yang diterima dari API
-            //             });
-            //         })
-            //         .catch(error => {
-            //             // console.error('Error in DataTable:', error);
-            //             callback({
-            //                 data: [] // Kembalikan array kosong jika ada error
-            //             });
-            //         });
-            // },
             columns: [
                 // columns according to JSON
                 { data: '' },
-                { data: 'full_name' },
-                { data: 'nip' },
-                { data: 'telegram_id' },
-                { data: 'access_bot' },
-                { data: 'status' },
-                { data: 'role' },
+                { data: 'vpn_name' },
+                { data: 'ip_address' },
+                { data: 'username' },
+                { data: 'password' },
+                { data: 'protocol' },
+                { data: 'description' },
                 { data: 'action' }
             ],
             columnDefs: [
@@ -131,71 +116,20 @@ $(function () {
                     targets: 1,
                     responsivePriority: 4,
                     render: function (data, type, full, meta) {
-                        var $name = full['full_name'],
-                            $email = full['email'],
-                            $username = full['nip'],
-                            $image = full['avatar'];
-                        if ($image) {
-                            // For Avatar image
-                            var $output =
-                                '<img src="' + assetsPath + 'img/avatars/' + $image + '" alt="Avatar" class="rounded-circle">';
-                        } else {
-                            // For Avatar badge
-                            var stateNum = Math.floor(Math.random() * 6);
-                            var states = ['success', 'danger', 'warning', 'info', 'dark', 'primary', 'secondary'];
-                            var $state = states[stateNum],
-                                $name = full['full_name'],
-                                $initials = $name.match(/\b\w/g) || [];
-                            $initials = (($initials.shift() || '') + ($initials.pop() || '')).toUpperCase();
-                            $output = '<span class="avatar-initial rounded-circle bg-label-' + $state + '">' + $initials + '</span>';
-                        }
+                        var $name = full['vpn_name'];
                         // Creates full output for row
-                        var $row_output =
-                            '<div class="d-flex justify-content-start align-items-center user-name">' +
-                            '<div class="avatar-wrapper">' +
-                            '<div class="avatar avatar-sm me-3">' +
-                            $output +
-                            '</div>' +
-                            '</div>' +
+                        var $row_output = '<div class="d-flex justify-content-start align-items-center user-name">' +
                             '<div class="d-flex flex-column">' +
-                            '<a href="' +
-                            userView + $username +
-                            '" class="text-body text-truncate"><span class="fw-medium">' +
-                            $name + ' [' + $username + ']' +
-                            '</span></a>' +
-                            '<small class="text-muted">' +
-                            $email +
-                            '</small>' +
-                            '</div>' +
-                            '</div>';
+                            '<a class="text-body text-truncate">' +
+                            '<span class="fw-medium">' + $name + '</span></a></div></div>';
                         return $row_output;
                     }
                 },
-                // {
-                //   // User nip
-                //   targets: 2,
-                //   render: function (data, type, full, meta) {
-                //     var $role = full['nip'];
-                //     var roleBadgeObj = {
-                //       Subscriber:
-                //         '<span class="badge badge-center rounded-pill bg-label-warning w-px-30 h-px-30 me-2"><i class="bx bx-user bx-xs"></i></span>',
-                //       Author:
-                //         '<span class="badge badge-center rounded-pill bg-label-success w-px-30 h-px-30 me-2"><i class="bx bx-cog bx-xs"></i></span>',
-                //       Maintainer:
-                //         '<span class="badge badge-center rounded-pill bg-label-primary w-px-30 h-px-30 me-2"><i class="bx bx-pie-chart-alt bx-xs"></i></span>',
-                //       Editor:
-                //         '<span class="badge badge-center rounded-pill bg-label-info w-px-30 h-px-30 me-2"><i class="bx bx-edit bx-xs"></i></span>',
-                //       Admin:
-                //         '<span class="badge badge-center rounded-pill bg-label-secondary w-px-30 h-px-30 me-2"><i class="bx bx-mobile-alt bx-xs"></i></span>'
-                //     };
-                //     return "<span class='text-truncate d-flex align-items-center'>" + roleBadgeObj[$role] + $role + '</span>';
-                //   }
-                // },
                 {
                     // Plans
                     targets: 2,
                     render: function (data, type, full, meta) {
-                        var $plan = full['username'];
+                        var $plan = full['ip_address'];
 
                         return '<span class="fw-medium">' + $plan + '</span>';
                     }
@@ -204,7 +138,7 @@ $(function () {
                     // Plans
                     targets: 3,
                     render: function (data, type, full, meta) {
-                        var $plan = full['telegram_id'];
+                        var $plan = full['username'];
 
                         return '<span class="fw-medium">' + $plan + '</span>';
                     }
@@ -213,24 +147,27 @@ $(function () {
                     // Plans
                     targets: 4,
                     render: function (data, type, full, meta) {
-                        var $plan = full['email'];
+                        var $plan = full['password'];
 
                         return '<span class="fw-medium">' + $plan + '</span>';
                     }
                 },
                 {
-                    // User Status
+                    // Plans
                     targets: 5,
                     render: function (data, type, full, meta) {
-                        var $status = full['status'];
-                        var activeKeys = findKeyByTitle($status);
-                        var statusInfo = statusObj[activeKeys]; // Assume data is 1, 2, or 3
-                        if (statusInfo) {
-                            return '<span class="badge ' + statusInfo.class + '">' + statusInfo.title + '</span>';
-                        } else {
-                            return '<span class="badge bg-label-secondary">Unknown</span>'; // Fallback for unknown status
-                        }
-                        // return '<span class="badge bg-label-warning">' + $status + '</span>';
+                        var $plan = full['protocol'];
+
+                        return '<span class="fw-medium">' + $plan + '</span>';
+                    }
+                },
+                {
+                    // Plans
+                    targets: 6,
+                    render: function (data, type, full, meta) {
+                        var $plan = full['description'];
+
+                        return '<span class="fw-medium">' + $plan + '</span>';
                     }
                 },
                 {
@@ -423,7 +360,7 @@ $(function () {
                     display: $.fn.dataTable.Responsive.display.modal({
                         header: function (row) {
                             var data = row.data();
-                            return 'Details of ' + data['full_name'];
+                            return 'Details of ' + data['vpn_name'];
                         }
                     }),
                     type: 'column',
@@ -505,12 +442,12 @@ $(function () {
     }
     // Delete Record
     $('.add-new-user').on('click', '.data-submit', function (res) {
-        console.log(res.delegateTarget.getAttribute('id'))
-        if (res.delegateTarget.getAttribute('id') === 'addNewRoleForm') {
-            var form = document.getElementById('addNewRoleForm');
+        // console.log(res.delegateTarget.getAttribute('id'))
+        if (res.delegateTarget.getAttribute('id') === 'editNewUserForm') {
+            var form = document.getElementById('editNewUserForm');
             var formData = new FormData(form);
             var actionUrl = form.getAttribute('action'); // Mengambil action URL dari form
-            console.log(form)
+            console.log(actionUrl)
         }
 
         if (res.delegateTarget.getAttribute('id') === 'addNewUserForm') {
@@ -520,230 +457,73 @@ $(function () {
             for (let pair of formData.entries()) {
                 console.log(pair[0] + ': ' + pair[1]);
             }
+            console.log(actionUrl)
         }
 
 
-        $.ajax({
-            url: actionUrl,
-            type: 'POST',
-            data: formData,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                console.log(response);
-                if (response.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: response.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn btn-success'
-                        }
-                    }).then(function () {
-                        window.location.href = '/members';
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Please correct the highlighted fields.',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-primary'
-                        },
-                        buttonsStyling: false
-                    });
-                }
-            },
-            error: function (xhr) {
-                console.log(xhr.responseText); // Lihat detail error
-                let errors = xhr.responseJSON ? xhr.responseJSON.errors : null;
+        // $.ajax({
+        //     url: actionUrl,
+        //     type: 'POST',
+        //     data: formData,
+        //     headers: {
+        //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //     },
+        //     processData: false,
+        //     contentType: false,
+        //     success: function (response) {
+        //         console.log(response);
+        //         if (response.status === 'success') {
+        //             Swal.fire({
+        //                 title: 'Success!',
+        //                 text: response.message,
+        //                 icon: 'success',
+        //                 confirmButtonText: 'OK',
+        //                 customClass: {
+        //                     confirmButton: 'btn btn-success'
+        //                 }
+        //             }).then(function () {
+        //                 window.location.href = '/members';
+        //             });
+        //         } else {
+        //             Swal.fire({
+        //                 title: 'Error!',
+        //                 text: 'Please correct the highlighted fields.',
+        //                 icon: 'error',
+        //                 customClass: {
+        //                     confirmButton: 'btn btn-primary'
+        //                 },
+        //                 buttonsStyling: false
+        //             });
+        //         }
+        //     },
+        //     error: function (xhr) {
+        //         console.log(xhr.responseText); // Lihat detail error
+        //         let errors = xhr.responseJSON ? xhr.responseJSON.errors : null;
 
-                if (errors) {
-                    // Loop melalui error dan tampilkan ke pengguna
-                    $.each(errors, function (key, value) {
-                        console.log('Error pada ' + key + ': ' + value);
-                    });
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Please correct the highlighted fields.',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'btn btn-primary'
-                        },
-                        buttonsStyling: false
-                    });
-                }
+        //         if (errors) {
+        //             // Loop melalui error dan tampilkan ke pengguna
+        //             $.each(errors, function (key, value) {
+        //                 console.log('Error pada ' + key + ': ' + value);
+        //             });
+        //             Swal.fire({
+        //                 title: 'Error!',
+        //                 text: 'Please correct the highlighted fields.',
+        //                 icon: 'error',
+        //                 customClass: {
+        //                     confirmButton: 'btn btn-primary'
+        //                 },
+        //                 buttonsStyling: false
+        //             });
+        //         }
 
 
-            }
-        });
+        //     }
+        // });
     });
     // Delete Record
     // Delete Record
-    $('.role-one').on('click', '.delete-role', function () {
-        var menuname = $(this).data('name');
-        var menuId = $(this).data('id');
-        var userCount = $(this).data('user');
-
-        var rolesData = $(this).data('role'); // Ambil data-role dari elemen
-        // console.log('Raw rolesData:', rolesData);
-
-        // Cek apakah rolesData masih berupa string dan lakukan parsing
-        if (typeof rolesData === 'string') {
-            try {
-                rolesData = JSON.parse(rolesData); // Parsing jika rolesData adalah string JSON
-            } catch (e) {
-                console.error('JSON parsing error:', e);
-            }
-        }
-
-        // console.log(rolesData); // Cek output dari rolesData
-
-        // Cek apakah userCount lebih dari 0
-        if (userCount > 0) {
-            // console.log('run dropdown');
-            // Pastikan rolesData adalah array sebelum menggunakan forEach
-            if (Array.isArray(rolesData)) {
-                var dropdownOptions = '';
-                rolesData.forEach(function (role) {
-                    if (role.id != menuId) { // Hindari menampilkan role yang sedang dipilih
-                        dropdownOptions += `<option value="${role.id}">${role.name}</option>`;
-                    }
-                });
-
-                Swal.fire({
-                    title: 'Role has users!',
-                    html: `<div class="text-center">
-                    <span style="font-size: 14px;">Role <b style="color: red;">${menuname}</b> memiliki <b>${userCount}</b> pengguna.</span><br>
-                    <select id="newRole" class="swal2-select form-control mt-2" style="font-size: 14px; width: auto; display: inline-block;">
-                        ${dropdownOptions}
-                    </select>
-                </div>`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Move & Delete',
-                    cancelButtonText: 'Cancel',
-                    customClass: {
-                        confirmButton: 'btn btn-danger me-3',
-                        cancelButton: 'btn btn-secondary'
-                    },
-                    buttonsStyling: false,
-                    preConfirm: () => {
-                        const newRoleId = document.getElementById('newRole').value;
-                        if (!newRoleId) {
-                            Swal.showValidationMessage('Please select a new role!');
-                        }
-                        return newRoleId;
-                    }
-                }).then(function (result) {
-                    if (result.isConfirmed) {
-                        var newRoleId = result.value;
-                        // console.log(newRoleId);
-
-                        // Kirim request AJAX untuk memindahkan user dan menghapus role
-                        $.ajax({
-                            url: '/members/role/delete/' + menuId,
-                            type: 'DELETE',
-                            data: {
-                                new_role_id: newRoleId, // Role baru untuk pengguna
-                            },
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function (response) {
-                                if (response.status === 'success') {
-                                    Swal.fire({
-                                        title: 'Deleted!',
-                                        text: response.message,
-                                        icon: 'success',
-                                        confirmButtonText: 'OK',
-                                        customClass: {
-                                            confirmButton: 'btn btn-success'
-                                        }
-                                    }).then(function () {
-                                        $('#role-card-' + menuId).remove();
-                                    });
-                                }
-                            },
-                            error: function (xhr) {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'Something went wrong. Please try again later.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK',
-                                    customClass: {
-                                        confirmButton: 'btn btn-danger'
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            } else {
-                console.error('rolesData is not an array');
-            }
-        } else {
-            // Jika userCount <= 0, tampilkan SweetAlert biasa
-            Swal.fire({
-                title: 'Are you sure?',
-                html: 'Do you want to delete <b style="color: red;">' + menuname + '</b> ??',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    confirmButton: 'btn btn-danger me-3',
-                    cancelButton: 'btn btn-secondary'
-                },
-                buttonsStyling: false
-            }).then(function (result) {
-                if (result.value) {
-                    // Jika dikonfirmasi, jalankan request Ajax untuk penghapusan
-                    $.ajax({
-                        url: '/members/role/delete/' + menuId,
-                        type: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function (response) {
-                            if (response.status === 'success') {
-                                Swal.fire({
-                                    title: 'Deleted!',
-                                    text: response.message,
-                                    icon: 'success',
-                                    confirmButtonText: 'OK',
-                                    customClass: {
-                                        confirmButton: 'btn btn-success'
-                                    }
-                                }).then(function () {
-                                    $('#role-card-' + menuId).remove();
-                                });
-                            }
-                        },
-                        error: function (xhr) {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'Something went wrong. Please try again later.',
-                                icon: 'error',
-                                confirmButtonText: 'OK',
-                                customClass: {
-                                    confirmButton: 'btn btn-danger'
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    });
-
-
-    // Delete Record
-    $('.datatables-users tbody').on('click', '.delete-record', function () {
+    $(document).on('click', '.delete-record', function () {
+        // $('.datatables-users tbody').on('click', '.delete-record', function () {
         Swal.fire({
             title: 'Are you sure?',
             text: "Do you want to remove the data?",
@@ -755,7 +535,17 @@ $(function () {
             cancelButtonText: 'No, cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                // $('#editUserModal').modal('hide');
+                try {
+                    var modalElement = document.querySelector('.modal'); // Pilih modal berdasarkan class
+                    if (modalElement) { // Pastikan modalElement ditemukan
+                        var modal = bootstrap.Modal.getInstance(modalElement); // Ambil instance modal
+                        if (modal) { // Pastikan modal instance ada
+                            modal.hide(); // Tutup modal
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error closing modal:', error); // Log error jika terjadi kesalahan
+                }
                 Swal.fire(
                     'Saved!',
                     'Your changes have been saved.',
@@ -767,49 +557,33 @@ $(function () {
             }
         });
     });
+    // $('.datatables-users tbody').on('click', '.edit-button', function () {
     $(document).on('click', '.edit-button', function () {
-
-        var user = JSON.parse($(this).attr('data-user'));
-
-        // Isi modal dengan data pengguna
-        $('#edit_user_id').val(user.id);
-        $('#edit_nip').val(user.nip);
-        $('#edit_full_name').val(user.full_name);
-        $('#edit_username').val(user.username);
-        $('#edit_telegram_id').val(user.telegram_id);
-        $('#edit_email').val(user.email);
-        $('#edit_access_bot').val(user.access_bot);
-        $('#edit_status').val(user.status);
-        $('#edit_role').val(user.role_id); // Pastikan role_id ada di user
-
-        // Reset password field
-        $('#edit_password').val('');
-        // Tampilkan modal
-        $('#editUserModal').modal('show');
-    });
-
-    $('.role-edit-modal').on('click', function () {
-        var roleId = $(this).data('role-id');
-        var roleName = $(this).data('role-name');
-        var selectedSubMenus = $(this).data('role-submenus');
-        selectedSubMenus = selectedSubMenus.map(item => item
-            .sub_menu_id); // Ambil hanya sub_menu_id
-
-        // Set nilai pada modal form
-        $('#editModalRole #name-edit').val(roleName);
-        $('#editModalRole #roleId').val(roleId);
-
-        // Cek checkbox berdasarkan sub_menu_id yang sudah dimiliki role
-        $('input[name="sub_menus[]"]').each(function () {
-            if (selectedSubMenus.includes(parseInt($(this).val()))) {
-                $(this).prop('checked', true); // Centang checkbox jika ada di list
-            } else {
-                $(this).prop('checked', false); // Hilangkan centang jika tidak ada
+        // Get the user data from the data-user attribute
+        try {
+            var modalElement = document.querySelector('.modal'); // Pilih modal berdasarkan class
+            if (modalElement) { // Pastikan modalElement ditemukan
+                var modal = bootstrap.Modal.getInstance(modalElement); // Ambil instance modal
+                if (modal) { // Pastikan modal instance ada
+                    modal.hide(); // Tutup modal
+                }
             }
-        });
+        } catch (error) {
+            console.error('Error closing modal:', error); // Log error jika terjadi kesalahan
+        }
+        var user = $(this).data('user');
 
-        // Tampilkan modal
-        $('#editModalRole').modal('show');
+        // Populate the form fields with the data from the user object
+        $('#edit_vpn_name').val(user.vpn_name);
+        $('#edit_ip_address').val(user.ip_address);
+        $('#edit_username').val(user.username);
+        $('#edit_password').val(user.password);
+        $('#edit_add-user-role').val(user.role);
+        // Show the offcanvas (Bootstrap 5)
+        var offcanvasElement = document.getElementById('offcanvaseditUser');
+        var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+        offcanvas.show();
+        // $('#editNewUserForm').modal('show');
     });
 
 

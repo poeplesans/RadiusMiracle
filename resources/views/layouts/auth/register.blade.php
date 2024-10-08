@@ -70,15 +70,6 @@
             <form id="formAuthentication" class="mb-3 fv-plugins-bootstrap5 fv-plugins-framework" action="/register"
                 method="post" novalidate="novalidate">
                 @csrf
-                {{-- <div class="mb-3 fv-plugins-icon-container">
-                    <label for="name" class="form-label">Full name</label>
-                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                        name="name" placeholder="Enter your full name" autofocus="" required value="{{ old('name') }}">
-                    @error('name')
-                        <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                            {{ $message }}</div>
-                    @enderror
-                </div> --}}
                 <div class="mb-3 fv-plugins-icon-container">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" class="form-control @error('username') is-invalid @enderror" id="username"
@@ -144,7 +135,7 @@
                 <div class="mb-3 form-password-toggle fv-plugins-icon-container">
                     <label class="form-label" for="password_confirmation">Confirm Password</label>
                     <div class="input-group input-group-merge has-validation">
-                        <input type="password_confirmation" id="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror"
+                        <input type="password" id="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror"
                             name="password_confirmation" placeholder="············" aria-describedby="password_confirmation" required>
                     </div>
                     @error('password')

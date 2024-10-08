@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
               },
               stringLength: {
                 min: 6,
-                message: 'Username must be more than 6 characters'
+                message: 'Username must be more than 8 characters'
               }
             }
           },
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
               },
               stringLength: {
                 min: 6,
-                message: 'Password must be more than 6 characters'
+                message: 'Password must be more than 8 characters'
               }
             }
           },
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
               },
               stringLength: {
                 min: 6,
-                message: 'Password must be more than 6 characters'
+                message: 'Password must be more than 8 characters'
               }
             }
           },

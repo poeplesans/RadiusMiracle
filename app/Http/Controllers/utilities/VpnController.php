@@ -8,6 +8,7 @@ use App\Helpers\MenuHelper;
 use Illuminate\Http\Request;
 use App\Helpers\DatabaseHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Vpn;
 use Illuminate\Support\Facades\Auth;
 
 class VpnController extends Controller
@@ -27,7 +28,7 @@ class VpnController extends Controller
         DatabaseHelper::setDynamicConnection();
 
         // Mengambil semua data user
-        $users = User::with('role_id')->get();
+        $vpns = Vpn::get();
         $usercek = User::where('email', $user->email)->with('role_id')->first();
         if ($usercek) {
             $usercek->makeHidden(['password']);
@@ -35,6 +36,8 @@ class VpnController extends Controller
         } else {
             $usercek =  $user;
         }
+
+        // return dd($vpns);
 
         // Mengambil semua role beserta sub_menu_id dari role_sub_menu
         $roles = Role::with(['roleSubMenus' => function ($query) {
@@ -46,7 +49,7 @@ class VpnController extends Controller
         // Return ke view dengan data menu, users, roles, dan role_sub_menus
         return view('content.utilities.vpn', [
             'menuArray' => $menus,
-            'users' => $users,
+            'users' => $vpns,
             'usercek' => $usercek,
             'roles' => $roles,
 

@@ -175,19 +175,16 @@ class AuthController extends Controller
             $table->boolean('status')->default(true); // Status (active or inactive)
             $table->timestamps(); // created_at and updated_at
         });
-        // Schema::connection($dbName)->create('points', function (Blueprint $table) {
-        //     $table->bigIncrements('id');
-        //     $table->unsignedBigInteger('line_id')->nullable();
-        //     $table->integer('map_id')->nullable();
-        //     $table->decimal('latitude', 10, 7)->nullable();
-        //     $table->decimal('longitude', 10, 7)->nullable();
-        //     $table->string('village', 45)->nullable();
-        //     $table->string('county', 45)->nullable();
-        //     $table->string('state', 45)->nullable();
-        //     $table->string('region', 45)->nullable();
-        //     $table->string('display_name', 255)->nullable();
-        //     $table->timestamps(); // For created_at and updated_at
-        // });
+        Schema::connection($dbName)->create('vpns', function (Blueprint $table) {
+            $table->id(); // Primary key
+            $table->string('vpn_name'); // Nama VPN
+            $table->string('ip_address'); // Alamat IP
+            $table->string('username'); // Username VPN
+            $table->string('password'); // Password VPN
+            $table->string('protocol')->nullable(); // Protokol yang digunakan (PPTP, L2TP, dll)
+            $table->text('label')->nullable(); // Deskripsi VPN
+            $table->timestamps(); // Created at and Updated at
+        });
         // Schema::connection($dbName)->create('lines', function (Blueprint $table) {
         //     $table->increments('id'); // Auto-incrementing primary key
         //     $table->string('name', 255)->nullable(); // Nullable string with a length of 255
